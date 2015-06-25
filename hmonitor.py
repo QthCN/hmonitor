@@ -12,6 +12,9 @@ define("mysql_host", default="127.0.0.1:3306", help="hmonitor database host")
 define("mysql_database", default="blog", help="hmonitor database name")
 define("mysql_user", default="blog", help="hmonitor database user")
 define("mysql_password", default="blog", help="hmonitor database password")
+define("zabbix_user", default="Admin", help="Zabbix user name")
+define("zabbix_password", default="zabbix", help="Zabbix password")
+define("zabbix_url", default="http://127.0.0.1/zabbix", help="Zabbix URL")
 
 
 class Application(tornado.web.Application):

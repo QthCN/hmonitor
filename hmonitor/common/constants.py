@@ -1,0 +1,1 @@
+TRIGGER_PREFIX = "HM-"
