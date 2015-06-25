@@ -21,8 +21,12 @@ class Application(tornado.web.Application):
         ]
         settings = dict(
             blog_title="Monitor",
-            template_path=os.path.join(os.path.dirname(__file__), "templates"),
-            static_path=os.path.join(os.path.dirname(__file__), "static"),
+            template_path=os.path.join(os.path.dirname(__file__),
+                                       "hmonitor",
+                                       "templates"),
+            static_path=os.path.join(os.path.dirname(__file__),
+                                     "hmonitor",
+                                     "static"),
             debug=True,
         )
         super(Application, self).__init__(handlers, **settings)

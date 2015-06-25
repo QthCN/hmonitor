@@ -1,4 +1,6 @@
 from hmonitor.handlers import BaseHandler
 
 class HelloWorldHandler(BaseHandler):
-    pass
+
+    def get(self):
+        self.render("helloworld.html")
