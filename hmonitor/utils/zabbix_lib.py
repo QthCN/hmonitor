@@ -25,7 +25,8 @@ class ZabbixProxy(object):
                                               ),
                                               body=body)
         http_client = httpclient.HTTPClient()
-        logging.debug("SEND REQUEST TO ZABBIX: url: {url}, body: {body}".format(
+        logging.debug("SEND REQUEST TO ZABBIX: url: {url}, "
+                      "body: {body}".format(
             url=self.url,
             body=body
         ))
@@ -75,7 +76,8 @@ class ZabbixProxy(object):
         if only_hm is False:
             result = triggers
         else:
-            result = [t for t in triggers if t["description"].upper().startswith(
+            result = [t for t in triggers if
+                        t["description"].upper().startswith(
                 constants.TRIGGER_PREFIX
             )]
 
