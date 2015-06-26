@@ -1,12 +1,19 @@
 import logging
 
 from hmonitor.agents import BaseAgent
+from hmonitor.utils.sms_lib import SmsProxy
 import hmonitor.common.constants as constants
 
 class SmsAgent(BaseAgent):
 
-    def __init__(self, db):
+    def __init__(self, db, username, password,
+                 epid, endpoint, charset="gb2312"):
         super(SmsAgent, self).__init__(db)
+        self.sms_proxy = SmsProxy(username=username,
+                                  password=password,
+                                  epid=epid,
+                                  endpoint=endpoint,
+                                  charset=charset)
 
     def do_task(self):
         while True:
@@ -26,10 +33,14 @@ class SmsAgent(BaseAgent):
             self._handle_event(event)
 
     def _do_send_sms(self, phone, msg, event):
-        # TODO(tianhuan) send msg here
         logging.debug("SEND MSG {m} TO {p}".format(m=msg, p=phone))
+        result = self.sms_proxy.send(msg=msg, to=phone)
+        if result is False:
+            logging.error("SEND SMS FAILED, MSG: {m}".format(m=msg))
+            return False
         self.db.record_alert_msg(event["trigger_name"], event["hostname"],
                                  phone=phone)
+        return True
 
     def _handle_event(self, event):
         msg = self.get_alert_msg(event)

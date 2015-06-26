@@ -10,13 +10,27 @@ from hmonitor.agents.sms_agent import SmsAgent
 from hmonitor.models.db import HMonitorDB
 
 
+#MySQL
 define("mysql_host", default="127.0.0.1:3306", help="hmonitor database host")
 define("mysql_database", default="hmonitor", help="hmonitor database name")
 define("mysql_user", default="root", help="hmonitor database user")
 define("mysql_password", default="rootroot", help="hmonitor database password")
+#Zabbix
 define("zabbix_user", default="Admin", help="Zabbix user name")
 define("zabbix_password", default="zabbix", help="Zabbix password")
 define("zabbix_url", default="http://127.0.0.1/zabbix", help="Zabbix URL")
+#Mail
+define("mail_api_user", default="", help="mail user")
+define("mail_api_key", default="", help="mail password")
+define("mail_sender", default="", help="mail sender")
+define("mail_endpoint", default="", help="mail endpoint")
+#SMS
+define("sms_user", default="", help="sms user")
+define("sms_password", default="", help="sms password")
+define("sms_epid", default="", help="sms epid")
+define("sms_endpoint", default="", help="sms endpoint")
+define("sms_charset", default="gb2312", help="sms charset")
+
 
 
 class Agent(object):
@@ -36,8 +50,17 @@ class Agent(object):
                              mysql_host=options.mysql_host,
                              mysql_database=options.mysql_database)
 
-        self.notification_agents = [MailAgent(db=self.db),
-                                    SmsAgent(db=self.db)]
+        self.notification_agents = [MailAgent(db=self.db,
+                                              api_user=options.mail_api_user,
+                                              api_key=options.mail_api_key,
+                                              sender=options.mail_sender,
+                                              endpoint=options.mail_endpoint),
+                                    SmsAgent(db=self.db,
+                                             username=options.sms_user,
+                                             password=options.sms_password,
+                                             epid=options.sms_epid,
+                                             endpoint=options.sms_endpoint,
+                                             charset=options.sms_charset)]
 
     def initialize(self):
         for agent in self.notification_agents:

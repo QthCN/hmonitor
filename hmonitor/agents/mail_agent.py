@@ -2,11 +2,16 @@ import logging
 
 from hmonitor.agents import BaseAgent
 from hmonitor.utils import is_in_working_time_now
+from hmonitor.utils.mail_lib import MailProxy
 
 class MailAgent(BaseAgent):
 
-    def __init__(self, db):
+    def __init__(self, db, api_user, api_key, sender, endpoint):
         super(MailAgent, self).__init__(db)
+        self.mail_proxy = MailProxy(api_user=api_user,
+                                    api_key=api_key,
+                                    sender=sender,
+                                    endpoint=endpoint)
 
     def do_task(self):
         while True:
@@ -24,10 +29,18 @@ class MailAgent(BaseAgent):
             logging.debug("NOT IN WORKING TIME, IGNORE THIS EVENT.")
 
     def _do_send_sms(self, mail, msg, event):
-        # TODO(tianhuan) send msg here
         logging.debug("SEND MSG {m} TO {ma}".format(m=msg, ma=mail))
+        result = self.mail_proxy.send(
+            subject="[ALERT] {0}".format(event["trigger_name"]),
+            msg=msg,
+            to=mail
+        )
+        if result is False:
+            logging.error("SEND MAIL FAILED, MSG: {m}".format(m=msg))
+            return False
         self.db.record_alert_msg(event["trigger_name"], event["hostname"],
                                  mail=mail)
+        return True
 
     def _handle_event(self, event):
         msg = self.get_alert_msg(event)
