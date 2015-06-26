@@ -1,11 +1,19 @@
-import logging
+import datetime
 
-#TODO(tianhuan) Add cache expire feature
 
 cache_dict = dict()
 
+
 def get_cached_content(key):
-    return cache_dict.get(key, None)
+    v = cache_dict.get(key, None)
+    if v is None:
+        return None
+    if (datetime.datetime.now() - v["added_time"]).seconds > 300:
+        return None
+    else:
+        return v["value"]
+
 
 def set_cached_content(key, value):
-    cache_dict[key] = value
+    cache_dict[key] = dict(added_time=datetime.datetime.now(),
+                           value=value)

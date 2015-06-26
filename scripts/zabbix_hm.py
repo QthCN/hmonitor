@@ -16,6 +16,7 @@ LOG_FORMAT = ("%(asctime)s.%(msecs).03d %(name)s[%(process)d] %(threadName)s "
               "%(levelname)s - %(message)s")
 LOG_DATE_FMT = "%Y-%m-%d %H:%M:%S"
 
+# NOTE(tianhuan) Don't change this map, some codes depend on it.
 ZBX_SEVERITY_MAP = {
     'Disaster':       'critical',
     'High':           'major',
@@ -57,7 +58,7 @@ def main():
         except ValueError, e:
             LOG.warning('%s: %s', e, line)
             continue
-
+        value = value.strip()
         if macro == 'service':
             value = value.split(', ')
         if macro == 'severity':

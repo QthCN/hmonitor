@@ -141,7 +141,8 @@ class HMonitorDB(object):
                 trigger_name=trigger_name
             ))
 
-    def record_trigger_event(self, trigger_name, hostname, event, value):
+    def record_trigger_event(self, trigger_name, hostname, event,
+                             value, severity):
         with DB(**self.db_dict) as db:
             db._db.autocommit(False)
 
@@ -157,13 +158,16 @@ class HMonitorDB(object):
             if len(events) == 0:
                 db.execute("INSERT INTO TRIGGER_EVENTS (TRIGGER_NAME, "
                            "HOSTNAME, EVENT, VALUE, FIRST_OCCUR_TIME, "
+                           "SEVERITY, "
                            "LAST_OCCUR_TIME, OCCUR_AMOUNT, STATUS) VALUES "
                            "('{trigger_name}', '{hostname}', '{event}', "
-                           "'{value}', NOW(), NOW(), 1, '{status}')".format(
+                           "'{value}', NOW(), '{severity}', NOW(), 1, "
+                           "'{status}')".format(
                     trigger_name=trigger_name,
                     hostname=hostname,
                     event=event,
                     value=value,
+                    severity=severity,
                     status=constants.TRIGGER_EVENT_STATUS["new"]
                 ))
 

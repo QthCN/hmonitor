@@ -15,6 +15,7 @@ class AlertHandler(BaseHandler):
         hostname = request_body.get("resource", "").strip()
         event = request_body.get("event", "").strip()
         value = request_body.get("value", "").strip()
+        severity = request_body.get("severity", "").strip()
 
         if not trigger_name.startswith(constants.TRIGGER_PREFIX):
             pass
@@ -22,4 +23,5 @@ class AlertHandler(BaseHandler):
             self.db.record_trigger_event(trigger_name=trigger_name,
                                          hostname=hostname,
                                          event=event,
-                                         value=value)
+                                         value=value,
+                                         severity=severity)
