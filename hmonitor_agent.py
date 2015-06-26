@@ -44,6 +44,7 @@ class Agent(object):
 
     def _auto_fix(self, event):
         # TODO(tianhuan) add auto fix here
+        logging.debug("BEGIN AUTO FIX ON EVENT: {0}".format(event))
         return False
 
     def _get_history_key(self, event):
