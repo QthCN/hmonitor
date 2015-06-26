@@ -60,9 +60,9 @@ class AlertsStatHandler(BaseHandler):
             for alert in alerts:
                 m = alert.get("mail", "")
                 p = alert.get("phone", "")
-                if m != "":
+                if m and m != "":
                     mail_amount += 1
-                if p != "":
+                if p and p != "":
                     sms_amount += 1
             return dict(mail=mail_amount, sms=sms_amount)
 
