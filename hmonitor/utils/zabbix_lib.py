@@ -60,7 +60,7 @@ class ZabbixProxy(object):
 
     def get_triggers(self, only_hm=True):
         method = "trigger.get"
-        if cache.get_cached_content(method, None):
+        if cache.get_cached_content(method):
             return cache.get_cached_content(method)
 
         request_body = dict(jsonrpc="2.0",
