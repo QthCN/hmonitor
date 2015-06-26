@@ -4,9 +4,9 @@ import tornado
 import tornado.httpserver
 from tornado.options import define, options
 
-from hmonitor.handlers.helloworld import HelloWorldHandler
+from hmonitor.handlers.events import MyEventsHandler
 from hmonitor.handlers.alert import AlertHandler
-from hmonitor.handlers.login import LoginHandler
+from hmonitor.handlers.login import LoginHandler, LogoutHandler
 
 
 define("port", default=8888, help="run on the given port", type=int)
@@ -22,9 +22,14 @@ define("zabbix_url", default="http://127.0.0.1/zabbix", help="Zabbix URL")
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", HelloWorldHandler),
+            (r"/", MyEventsHandler),
+            (r"/index.html", MyEventsHandler),
+            (r"/myevents.html", MyEventsHandler),
+
             (r"/alert", AlertHandler),
-            (r"/login", LoginHandler),
+
+            (r"/login.html", LoginHandler),
+            (r"/logout.html", LogoutHandler),
         ]
         settings = dict(
             blog_title="Monitor",
@@ -36,7 +41,7 @@ class Application(tornado.web.Application):
                                      "static"),
             debug=True,
             cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
-            login_url="/login",
+            login_url="/login.html",
         )
         super(Application, self).__init__(handlers, **settings)
 

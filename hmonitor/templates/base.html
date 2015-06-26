@@ -2,29 +2,126 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>{% block title %}Default Title{% end %}</title>
+    <title>HMonitor</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <!-- Bootstrap -->
-    <link href="{{static_url("css/bootstrap.min.css")}}" rel="stylesheet">
-    {% block css %}{% end %}
+    <link rel="stylesheet" type="text/css" href="{{static_url("lib/bootstrap/css/bootstrap.css")}}">
+    
+    <link rel="stylesheet" type="text/css" href="{{static_url("stylesheets/theme.css")}}">
+    <link rel="stylesheet" href="{{static_url("lib/font-awesome/css/font-awesome.css")}}">
+
+    <script src="{{static_url("lib/jquery-1.7.2.min.js")}}" type="text/javascript"></script>
+
+    <!-- Demo page code -->
+
+    <style type="text/css">
+        #line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .brand { font-family: georgia, serif; }
+        .brand .first {
+            color: #ccc;
+            font-style: italic;
+        }
+        .brand .second {
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+
 
   </head>
-  <body>
 
-      <ul class="nav nav-pills">
-          <li role="presentation" {% if page_name == "events" %}class="active"{% else %}{% end %}><a href="#">事件</a></li>
-          <li role="presentation" {% if page_name == "subscribe" %}class="active"{% else %}{% end %}><a href="#">订阅告警</a></li>
-          <li role="presentation" {% if page_name == "my_alerts" %}class="active"{% else %}{% end %}><a href="#">我的告警</a></li>
-      </ul>
+  <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+  <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
+  <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
+  <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!--> 
+  <body class=""> 
+  <!--<![endif]-->
+    
+    <div class="navbar">
+        <div class="navbar-inner">
+                <ul class="nav pull-right">
+                    
+                    <li><a href="#" class="hidden-phone visible-tablet visible-desktop" role="button">设置</a></li>
+                    <li id="fat-menu" class="dropdown">
+                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-user"></i> XXX@unitedstack.com
+                            <i class="icon-caret-down"></i>
+                        </a>
 
-    {% block body %}<h1>Hello, world!</h1>{% end %}
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#">我的账户</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="logout.html">注销</a></li>
+                        </ul>
+                    </li>
+                    
+                </ul>
+                <a class="brand" href="index.html"><span class="first">H</span> <span class="second">Monitor</span></a>
+        </div>
+    </div>
+    
 
 
-    <script src="{{static_url("js/jquery-1.11.3.min.js")}}}"></script>
-    <script src="{{static_url("js/bootstrap.min.js")}}"></script>
-    {% block js %}{% end %}
+    <div class="sidebar-nav">
+
+        <a href="#event-menu" class="nav-header" data-toggle="collapse"><i class="icon-dashboard"></i>事件查看<i class="icon-chevron-up"></i></a>
+        <ul id="event-menu" class="nav nav-list collapse in">
+            <li><a href="myevents.html">我的事件</a></li>
+            <li ><a href="allevents.html">所有事件</a></li>  
+        </ul>
+
+        <a href="#subscribe-menu" class="nav-header collapsed" data-toggle="collapse"><i class="icon-exclamation-sign"></i>订阅管理<i class="icon-chevron-up"></i></a>
+        <ul id="subscribe-menu" class="nav nav-list collapse">
+            <li ><a href="mysubscribealerts.html">我的订阅</a></li>
+            <li ><a href="subscribealerts.html">订阅告警</a></li>
+            <li ><a href="alertsstat.html">告警统计</a></li>
+        </ul>
+
+        <a href="help.html" class="nav-header" ><i class="icon-question-sign"></i>帮助</a>
+    </div>
+    
+
+    
+    <div class="content">
+        <div class="header">
+            <h1 class="page-title">{% block page-title %}{% end %}</h1>
+        </div>
+        
+        <ul class="breadcrumb">
+            <li>{% block dir-parent %}{% end %}<span class="divider">/</span></li>
+            <li class="active">{% block dir-leaf %}{% end %}</li>
+        </ul>
+
+        <div class="container-fluid">
+            <div class="row-fluid">  
+                    <footer>
+                        <hr>
+                        <p>&copy; 2015 <a href="#" target="_blank">HMonitor</a></p>
+                    </footer>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <script src="{{static_url("lib/bootstrap/js/bootstrap.js")}}"></script>
+    <script type="text/javascript">
+        $("[rel=tooltip]").tooltip();
+        $(function() {
+            $('.demo-cancel-click').click(function(){return false;});
+        });
+    </script>
+    
   </body>
 </html>
+
+
