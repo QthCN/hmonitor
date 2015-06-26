@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block page-title %}我的订阅{% end %}
+
+{% block dir-parent %}订阅管理{% end %}
+{% block dir-leaf %}我的订阅{% end %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+    <div class="block">
+        <a href="#page-stats" class="block-heading" data-toggle="collapse">订阅信息</a>
+        <div id="page-stats" class="block-body collapse in">
+            <div class="stat-widget-container">
+                {{ triggers_name }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% end %}

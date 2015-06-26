@@ -78,8 +78,49 @@ class ZabbixProxy(object):
             result = [t for t in triggers if t["description"].upper().startswith(
                 constants.TRIGGER_PREFIX
             )]
-        cache.set_cached_content(method, result)
-        return result
+
+        # TODO(tianhuan) Remove duplicated triggers, necessary?
+        r = []
+        for t in result:
+            if t not in r:
+                r.append(t)
+        r.sort()
+
+        cache.set_cached_content(method, r)
+        return r
+
+    def get_triggers_name(self, only_hm=True):
+        method = "triggers_name"
+        if cache.get_cached_content(method):
+            return cache.get_cached_content(method)
+
+        triggers = self.get_triggers(only_hm)
+        triggers_name = []
+        for trigger in triggers:
+            name = trigger.get("description", None)
+            if name and name not in triggers_name:
+                triggers_name.append(name.strip())
+        triggers_name.sort()
+        cache.set_cached_content(method, triggers_name)
+        return triggers_name
+
+    def get_triggers_info(self, only_hm=True):
+        method = "triggers_info"
+        if cache.get_cached_content(method):
+            return cache.get_cached_content(method)
+
+        triggers = self.get_triggers(only_hm)
+        triggers_info = {}
+        for trigger in triggers:
+            name = trigger.get("description", None)
+            priority = trigger.get("priority", 0)
+            comments = trigger.get("comments", "")
+            if name:
+                triggers_info[name.strip()] = dict(name=name.strip(),
+                                                   priority=priority,
+                                                   comments=comments.strip())
+        cache.set_cached_content(method, triggers_info)
+        return triggers_info
 
     def _parse_url(self, url):
         if "http" in url.lower():

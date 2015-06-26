@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{{static_url("stylesheets/theme.css")}}">
     <link rel="stylesheet" href="{{static_url("lib/font-awesome/css/font-awesome.css")}}">
 
-    <script src="{{static_url("lib/jquery-1.7.2.min.js")}}" type="text/javascript"></script>
+    <script src="{{static_url("lib/jquery-1.8.1.min.js")}}" type="text/javascript"></script>
 
     <!-- Demo page code -->
 
@@ -78,8 +78,8 @@
             <li ><a href="allevents.html">所有事件</a></li>  
         </ul>
 
-        <a href="#subscribe-menu" class="nav-header collapsed" data-toggle="collapse"><i class="icon-exclamation-sign"></i>订阅管理<i class="icon-chevron-up"></i></a>
-        <ul id="subscribe-menu" class="nav nav-list collapse">
+        <a href="#subscribe-menu" class="nav-header" data-toggle="collapse"><i class="icon-exclamation-sign"></i>订阅管理<i class="icon-chevron-up"></i></a>
+        <ul id="subscribe-menu" class="nav nav-list collapse in">
             <li ><a href="mysubscribealerts.html">我的订阅</a></li>
             <li ><a href="subscribealerts.html">订阅告警</a></li>
             <li ><a href="alertsstat.html">告警统计</a></li>
@@ -100,10 +100,13 @@
             <li class="active">{% block dir-leaf %}{% end %}</li>
         </ul>
 
+        {% block content %}{% end %}
+
         <div class="container-fluid">
             <div class="row-fluid">  
                     <footer>
                         <hr>
+                        <p class="pull-right">Theme from <a href="#" title="Portnine" target="_blank">Portnine</a></p>
                         <p>&copy; 2015 <a href="#" target="_blank">HMonitor</a></p>
                     </footer>
             </div>
@@ -113,6 +116,7 @@
 
 
     <script src="{{static_url("lib/bootstrap/js/bootstrap.js")}}"></script>
+      <script type="text/javascript">{% block js %}{% end %}</script>
     <script type="text/javascript">
         $("[rel=tooltip]").tooltip();
         $(function() {

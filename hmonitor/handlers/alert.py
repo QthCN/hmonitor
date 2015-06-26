@@ -1,21 +1,11 @@
 import json
 import logging
 
-from tornado.options import options
-
 import hmonitor.common.constants as constants
 from hmonitor.handlers import BaseHandler
-from hmonitor.models.db import HMonitorDB
 
 
 class AlertHandler(BaseHandler):
-
-    def __init__(self, *args, **kwargs):
-        super(AlertHandler, self).__init__(*args, **kwargs)
-        self.db = HMonitorDB(mysql_user=options.mysql_user,
-                             mysql_passwd=options.mysql_password,
-                             mysql_host=options.mysql_host,
-                             mysql_database=options.mysql_database)
 
     def post(self):
         request_body = json.loads(self.request.body)

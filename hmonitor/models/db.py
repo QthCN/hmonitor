@@ -127,7 +127,7 @@ class HMonitorDB(object):
         with DB(**self.db_dict) as db:
             db.execute("INSERT INTO USERS_TRIGGER_BINDING "
                        "(USER_ID, TRIGGER_NAME) VALUES "
-                       "({user_id}, {trigger_name})".format(
+                       "({user_id}, '{trigger_name}')".format(
                 user_id=user_id,
                 trigger_name=trigger_name
             ))
@@ -136,7 +136,7 @@ class HMonitorDB(object):
         with DB(**self.db_dict) as db:
             db.execute("DELETE FROM USERS_TRIGGER_BINDING WHERE "
                        "USER_ID={user_id} and "
-                       "TRIGGER_NAME={trigger_name}".format(
+                       "TRIGGER_NAME='{trigger_name}'".format(
                 user_id=user_id,
                 trigger_name=trigger_name
             ))

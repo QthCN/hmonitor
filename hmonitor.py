@@ -6,6 +6,8 @@ from tornado.options import define, options
 
 from hmonitor.handlers.events import MyEventsHandler
 from hmonitor.handlers.alert import AlertHandler
+from hmonitor.handlers.alerts import (MySubscribeAlertsHandler,
+                                      SubscribeAlertsHandler)
 from hmonitor.handlers.login import LoginHandler, LogoutHandler
 
 
@@ -25,6 +27,8 @@ class Application(tornado.web.Application):
             (r"/", MyEventsHandler),
             (r"/index.html", MyEventsHandler),
             (r"/myevents.html", MyEventsHandler),
+            (r"/mysubscribealerts.html", MySubscribeAlertsHandler),
+            (r"/subscribealerts.html", SubscribeAlertsHandler),
 
             (r"/alert", AlertHandler),
 

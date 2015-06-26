@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block page-title %}订阅告警{% end %}
+
+{% block dir-parent %}订阅管理{% end %}
+{% block dir-leaf %}订阅告警{% end %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>提示:</strong> 订阅后，会在工作时间收到邮件告警，在全天收到短信告警。短信告警只针对高危告警项。
+    </div>
+
+    <div class="block">
+        <a href="#page-stats" class="block-heading" data-toggle="collapse">订阅告警</a>
+        <div id="page-stats" class="block-body collapse in">
+            <div class="stat-widget-container">
+                <table class="table">
+                    <tr>
+                        <th>告警项</th>
+                        <th>说明</th>
+                        <th>主机</th>
+                        <th>自动修复</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for _, trigger_info in triggers_info.items() %}
+                        <tr {% if trigger_info["priority"] == "0" %}
+                                class="info"
+                            {% elif trigger_info["priority"] == "1" %}
+                                class="info"
+                            {% elif trigger_info["priority"] == "2" %}
+                                class="warning"
+                            {% elif trigger_info["priority"] == "3" %}
+                                class="warning"
+                            {% elif trigger_info["priority"] == "4" %}
+                                class="error"
+                            {% else %}
+                                class="error"
+                            {% end %} >
+                            <td align="left">
+                                {{ trigger_info["name"] }}
+                            </td>
+                            <td align="left">
+                                {{ trigger_info["comments"] }}
+                            </td>
+                            <td>
+                                全部
+                            </td>
+                            <td>
+                                否
+                            </td>
+                            <td align="left">
+                                {% if trigger_info["name"] in triggers_subscribed %}
+                                    <button type="button" name="cancel_subscribe_{{ trigger_info["name"] }}" class="btn btn-default btn-sm btn-warning" onclick="unsubscribe('{{ trigger_info["name"] }}')">取消订阅</button>
+                                {% else %}
+                                    <button type="button" name="subscribe_{{ trigger_info["name"] }}" class="btn btn-default btn-sm "  onclick="subscribe('{{ trigger_info["name"] }}')">订阅告警</button>
+                                {% end %}
+                            </td>
+                        </tr>
+                    {% end %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% end %}
+
+{% block js %}
+
+function unsubscribe(name){
+    $.post("/subscribealerts.html", {action: "unsubscribe", name: name})
+          .done(function() {
+            alert( "取消成功" );
+          })
+          .fail(function() {
+            alert( "取消失败" );
+          })
+          .always(function() {
+            location.reload();
+        });
+}
+
+function subscribe(name){
+    $.post("/subscribealerts.html", {action: "subscribe", name: name})
+          .done(function() {
+            alert( "订阅成功" );
+          })
+          .fail(function() {
+            alert( "订阅失败" );
+          })
+          .always(function() {
+            location.reload();
+        });
+}
+
+{% end %}
