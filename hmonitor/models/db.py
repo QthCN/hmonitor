@@ -71,6 +71,13 @@ class HMonitorDB(object):
             ))
             return users[0] if len(users) > 0 else {}
 
+    def get_user_by_mail(self, mail):
+        with DB(**self.db_dict) as db:
+            users = db.query("SELECT * FROM USERS WHERE MAIL='{0}'".format(
+                mail
+            ))
+            return users[0] if len(users) > 0 else {}
+
     def check_password_by_mail(self, mail, passwd):
         with DB(**self.db_dict) as db:
             users = db.query("SELECT * FROM USERS WHERE MAIL='{mail}' "
