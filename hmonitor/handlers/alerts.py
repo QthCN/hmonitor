@@ -9,9 +9,12 @@ class MySubscribeAlertsHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user = self.get_user()
-        triggers_name = self.db.get_triggers_name_by_user_id(user.get("id",
-                                                                      -1))
-        self.render("mysubscribealerts.html", triggers_name=triggers_name)
+        triggers_info = self.zabbix.get_triggers_info()
+        triggers_subscribed = self.db.get_triggers_name_by_user_id(
+            user.get("id", -1)
+        )
+        self.render("mysubscribealerts.html", triggers_info=triggers_info,
+                    triggers_subscribed=triggers_subscribed)
 
 class SubscribeAlertsHandler(BaseHandler):
 
