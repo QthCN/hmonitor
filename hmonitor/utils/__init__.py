@@ -1,3 +1,5 @@
+import datetime
+
 import hmonitor.common.constants as constants
 
 
@@ -24,6 +26,7 @@ def sort_events_by_severity(events):
             information_events.append(event)
         else:
             unknown_events.append(event)
+
     sorted_events.extend(critical_events)
     sorted_events.extend(major_events)
     sorted_events.extend(warning_events)
@@ -32,3 +35,15 @@ def sort_events_by_severity(events):
     sorted_events.extend(unknown_events)
 
     return sorted_events
+
+def is_in_working_time(t):
+    weekday = t.weekday()
+    if weekday in (5, 6):
+        return False
+    hour = t.hour
+    if not (hour >= 10 and hour <= 19):
+        return False
+    return True
+
+def is_in_working_time_now():
+    return is_in_working_time(datetime.datetime.now())

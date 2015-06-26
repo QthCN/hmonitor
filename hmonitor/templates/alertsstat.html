@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block page-title %}告警统计{% end %}
+
+{% block dir-parent %}订阅管理{% end %}
+{% block dir-leaf %}告警统计{% end %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>提示:</strong> 本页面每五分钟自动刷新。
+    </div>
+
+    <div class="block">
+        <a href="#page-stats" class="block-heading" data-toggle="collapse">统计信息</a>
+        <div id="page-stats" class="block-body collapse in">
+
+            <div class="stat-widget-container">
+                <div class="stat-widget">
+                    <div class="stat-button">
+                        <p class="title">{{ sms_alerts_in_7_days }}</p>
+                        <p class="detail">7天内短信告警</p>
+                    </div>
+                </div>
+
+                <div class="stat-widget">
+                    <div class="stat-button">
+                        <p class="title">{{ mail_alerts_in_7_days }}</p>
+                        <p class="detail">7天内邮件告警</p>
+                    </div>
+                </div>
+
+                <div class="stat-widget">
+                    <div class="stat-button">
+                        <p class="title">{{ sms_alerts_in_30_days }}</p>
+                        <p class="detail">30天内短信告警</p>
+                    </div>
+                </div>
+
+                <div class="stat-widget">
+                    <div class="stat-button">
+                        <p class="title">{{ mail_alerts_in_30_days }}</p>
+                        <p class="detail">30天内邮件告警</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% end %}
+
+{% block js %}
+
+function reload_page() {
+    location.reload();
+}
+
+$(function(){
+    setInterval("reload_page()", 300000);
+});
+
+{% end %}

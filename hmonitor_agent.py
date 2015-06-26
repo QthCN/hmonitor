@@ -36,7 +36,8 @@ class Agent(object):
                              mysql_host=options.mysql_host,
                              mysql_database=options.mysql_database)
 
-        self.notification_agents = [MailAgent(), SmsAgent()]
+        self.notification_agents = [MailAgent(db=self.db),
+                                    SmsAgent(db=self.db)]
 
     def initialize(self):
         for agent in self.notification_agents:
@@ -63,7 +64,7 @@ class Agent(object):
                 h_key = self._get_history_key(event)
                 notice_obj = self.events_notification_history.get(h_key, None)
                 if (notice_obj and
-                        not self._is_history_expired(event)):
+                        not self._is_history_expired(notice_obj)):
                     logging.debug("{e}'s history is not expired".format(
                         e=h_key
                     ))

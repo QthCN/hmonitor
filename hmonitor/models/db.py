@@ -78,6 +78,13 @@ class HMonitorDB(object):
             ))
             return users[0] if len(users) > 0 else {}
 
+    def get_user_by_phone(self, phone):
+        with DB(**self.db_dict) as db:
+            users = db.query("SELECT * FROM USERS WHERE PHONE='{0}'".format(
+                phone
+            ))
+            return users[0] if len(users) > 0 else {}
+
     def check_password_by_mail(self, mail, passwd):
         with DB(**self.db_dict) as db:
             users = db.query("SELECT * FROM USERS WHERE MAIL='{mail}' "
@@ -216,3 +223,42 @@ class HMonitorDB(object):
             ))
             return events
 
+    def record_alert_msg(self, trigger_name, hostname,
+                         mail=None, phone=None):
+        if mail is None and phone is None:
+            logging.error("MAIL AND PHONE ARE NONE.")
+            return
+        with DB(**self.db_dict) as db:
+            if mail is not None:
+                sql = ("INSERT INTO ALERT_MSG(MAIL, TRIGGER_NAME, HOSTNAME, "
+                       "SEND_TIME) VALUES('{mail}', '{trigger_name}', "
+                       "'{hostname}', NOW())".format(mail=mail,
+                                                     trigger_name=trigger_name,
+                                                     hostname=hostname))
+            else:
+                sql = ("INSERT INTO ALERT_MSG(PHONE, TRIGGER_NAME, HOSTNAME, "
+                       "SEND_TIME) VALUES('{phone}', '{trigger_name}', "
+                       "'{hostname}', NOW())".format(phone=phone,
+                                                     trigger_name=trigger_name,
+                                                     hostname=hostname))
+            db.execute(sql)
+
+    def get_last_7_days_alert_msgs(self, mail=None, phone=None):
+        with DB(**self.db_dict) as db:
+            msg = db.query("SELECT * FROM ALERT_MSG WHERE "
+                           "DATE_SUB(NOW(), INTERVAL 7 DAY) < SEND_TIME "
+                           "AND (MAIL='{mail}' OR PHONE='{phone}')".format(
+                mail = mail or "NOTEXISTMAIL",
+                phone = phone or "NOTEXISTPHONE"
+            ))
+            return msg
+
+    def get_last_30_days_alert_msgs(self, mail=None, phone=None):
+        with DB(**self.db_dict) as db:
+            msg = db.query("SELECT * FROM ALERT_MSG WHERE "
+                           "DATE_SUB(NOW(), INTERVAL 30 DAY) < SEND_TIME "
+                           "AND (MAIL='{mail}' OR PHONE='{phone}')".format(
+                mail = mail or "NOTEXISTMAIL",
+                phone = phone or "NOTEXISTPHONE"
+            ))
+            return msg

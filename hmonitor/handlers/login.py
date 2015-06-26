@@ -22,6 +22,7 @@ class LoginHandler(BaseHandler):
             ))
             self.render("403.html")
 
+
 class LogoutHandler(BaseHandler):
 
     def get(self):
