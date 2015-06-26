@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>{% block title %}Default Title{% end %}</title>
+
+    <!-- Bootstrap -->
+    <link href="{{static_url("css/bootstrap.min.css")}}" rel="stylesheet">
+    {% block css %}{% end %}
+
+  </head>
+  <body>
+
+      <ul class="nav nav-pills">
+          <li role="presentation" {% if page_name == "events" %}class="active"{% else %}{% end %}><a href="#">事件</a></li>
+          <li role="presentation" {% if page_name == "subscribe" %}class="active"{% else %}{% end %}><a href="#">订阅告警</a></li>
+          <li role="presentation" {% if page_name == "my_alerts" %}class="active"{% else %}{% end %}><a href="#">我的告警</a></li>
+      </ul>
+
+    {% block body %}<h1>Hello, world!</h1>{% end %}
+
+
+    <script src="{{static_url("js/jquery-1.11.3.min.js")}}}"></script>
+    <script src="{{static_url("js/bootstrap.min.js")}}"></script>
+    {% block js %}{% end %}
+  </body>
+</html>

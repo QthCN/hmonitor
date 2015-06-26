@@ -5,7 +5,8 @@ import tornado.httpserver
 from tornado.options import define, options
 
 from hmonitor.handlers.helloworld import HelloWorldHandler
-from hmonitor.handlers.alert import  AlertHandler
+from hmonitor.handlers.alert import AlertHandler
+from hmonitor.handlers.login import LoginHandler
 
 
 define("port", default=8888, help="run on the given port", type=int)
@@ -23,6 +24,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", HelloWorldHandler),
             (r"/alert", AlertHandler),
+            (r"/login", LoginHandler),
         ]
         settings = dict(
             blog_title="Monitor",
@@ -33,6 +35,8 @@ class Application(tornado.web.Application):
                                      "hmonitor",
                                      "static"),
             debug=True,
+            cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
+            login_url="/login",
         )
         super(Application, self).__init__(handlers, **settings)
 
