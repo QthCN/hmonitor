@@ -2,6 +2,8 @@ import logging
 
 import torndb
 
+import hmonitor.common.constants as constants
+
 
 class DB(object):
 
@@ -96,30 +98,71 @@ class HMonitorDB(object):
                                                       phone=phone,
                                                       passwd=passwd))
 
-    def get_triggers_id_by_user_id(self, id):
+    def get_triggers_name_by_user_id(self, id):
         with DB(**self.db_dict) as db:
-            triggers_id = db.query("SELECT * FROM "
-                                   "USERS_TRIGGER_BINDING WHERE "
-                                   "USER_ID={0}".format(id))
-            return [t.trigger_id for t in triggers_id]
+            triggers_name = db.query("SELECT * FROM "
+                                     "USERS_TRIGGER_BINDING WHERE "
+                                     "USER_ID={0}".format(id))
+            return [t.trigger_name for t in triggers_name]
 
-    def bind_triggers_with_user_id(self, user_id, trigger_id):
-        triggers_id = self.get_triggers_id_by_user_id(user_id)
-        if trigger_id in triggers_id:
+    def bind_triggers_with_user_id(self, user_id, trigger_name):
+        triggers_name = self.get_triggers_name_by_user_id(user_id)
+        if trigger_name in triggers_name:
             return
 
         with DB(**self.db_dict) as db:
             db.execute("INSERT INTO USERS_TRIGGER_BINDING "
-                       "(USER_ID, TRIGGER_ID) VALUES "
-                       "({user_id}, {trigger_id})".format(
+                       "(USER_ID, TRIGGER_NAME) VALUES "
+                       "({user_id}, {trigger_name})".format(
                 user_id=user_id,
-                trigger_id=trigger_id
+                trigger_name=trigger_name
             ))
 
-    def unbind_triggers_with_user_id(self, user_id, trigger_id):
+    def unbind_triggers_with_user_id(self, user_id, trigger_name):
         with DB(**self.db_dict) as db:
             db.execute("DELETE FROM USERS_TRIGGER_BINDING WHERE "
-                       "USER_ID={user_id} and TRIGGER_ID={trigger_id}".format(
+                       "USER_ID={user_id} and "
+                       "TRIGGER_NAME={trigger_name}".format(
                 user_id=user_id,
-                trigger_id=trigger_id
+                trigger_name=trigger_name
             ))
+
+    def record_trigger_event(self, trigger_name, hostname, event, value):
+        with DB(**self.db_dict) as db:
+            db._db.autocommit(False)
+            events = db.query("SELECT * FROM TRIGGER_EVENTS "
+                              "WHERE TRIGGER_NAME='{trigger_name}' "
+                              "AND HOSTNAME='{hostname}' "
+                              "AND STATUS='{status}' FOR UPDATE".format(
+                trigger_name=trigger_name,
+                hostname=hostname,
+                status=constants.TRIGGER_EVENT_STATUS["new"]
+            ))
+
+            if len(events) == 0:
+                db.execute("INSERT INTO TRIGGER_EVENTS (TRIGGER_NAME, "
+                           "HOSTNAME, EVENT, VALUE, FIRST_OCCUR_TIME, "
+                           "LAST_OCCUR_TIME, OCCUR_AMOUNT, STATUS) VALUES "
+                           "('{trigger_name}', '{hostname}', '{event}', "
+                           "'{value}', NOW(), NOW(), 1, '{status}')".format(
+                    trigger_name=trigger_name,
+                    hostname=hostname,
+                    event=event,
+                    value=value,
+                    status=constants.TRIGGER_EVENT_STATUS["new"]
+                ))
+
+            else:
+                db.execute("UPDATE TRIGGER_EVENTS SET "
+                           "LAST_OCCUR_TIME=NOW(), VALUE='{value}', "
+                           "OCCUR_AMOUNT=OCCUR_AMOUNT+1 "
+                           "WHERE TRIGGER_NAME='{trigger_name}' "
+                           "AND STATUS='{status}' "
+                           "AND HOSTNAME='{hostname}'".format(
+                    value=value,
+                    trigger_name=trigger_name,
+                    status=constants.TRIGGER_EVENT_STATUS["new"],
+                    hostname=hostname
+                ))
+
+            db._db.commit()
