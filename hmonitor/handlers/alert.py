@@ -7,6 +7,7 @@ import hmonitor.common.constants as constants
 from hmonitor.handlers import BaseHandler
 from hmonitor.models.db import HMonitorDB
 
+
 class AlertHandler(BaseHandler):
 
     def __init__(self, *args, **kwargs):

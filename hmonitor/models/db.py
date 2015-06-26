@@ -105,6 +105,13 @@ class HMonitorDB(object):
                                      "USER_ID={0}".format(id))
             return [t.trigger_name for t in triggers_name]
 
+    def get_users_id_by_trigger_name(self, trigger_name):
+        with DB(**self.db_dict) as db:
+            users = db.query("SELECT * FROM "
+                             "USERS_TRIGGER_BINDING WHERE "
+                             "TRIGGER_NAME='{0}'".format(trigger_name))
+            return [u.user_id for u in users]
+
     def bind_triggers_with_user_id(self, user_id, trigger_name):
         triggers_name = self.get_triggers_name_by_user_id(user_id)
         if trigger_name in triggers_name:
@@ -130,6 +137,7 @@ class HMonitorDB(object):
     def record_trigger_event(self, trigger_name, hostname, event, value):
         with DB(**self.db_dict) as db:
             db._db.autocommit(False)
+
             events = db.query("SELECT * FROM TRIGGER_EVENTS "
                               "WHERE TRIGGER_NAME='{trigger_name}' "
                               "AND HOSTNAME='{hostname}' "
@@ -166,3 +174,34 @@ class HMonitorDB(object):
                 ))
 
             db._db.commit()
+
+    def expire_trigger_events(self, expire_time=5):
+        with DB(**self.db_dict) as db:
+            db._db.autocommit(False)
+
+            events = db.query("SELECT * FROM TRIGGER_EVENTS "
+                              "WHERE STATUS='{status}' "
+                              "AND DATE_SUB(NOW(), INTERVAL {t} MINUTE) > "
+                              "LAST_OCCUR_TIME FOR UPDATE".format(
+                status=constants.TRIGGER_EVENT_STATUS["new"],
+                t=expire_time
+            ))
+
+            for event in events:
+                event_id = event.get("id", -1)
+                db.execute("UPDATE TRIGGER_EVENTS SET STATUS='{status}' "
+                           "WHERE ID={event_id}".format(
+                    status=constants.TRIGGER_EVENT_STATUS["expired"],
+                    event_id=event_id
+                ))
+
+            db._db.commit()
+
+    def get_trigger_events_in_problem(self):
+        with DB(**self.db_dict) as db:
+            events = db.query("SELECT * FROM TRIGGER_EVENTS "
+                              "WHERE STATUS='{status}'".format(
+                status=constants.TRIGGER_EVENT_STATUS["new"],
+            ))
+            return events
+
