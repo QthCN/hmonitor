@@ -1,12 +1,13 @@
 import logging
 
 from hmonitor.agents import BaseAgent
+from hmonitor.utils.executor import get_executor
 from hmonitor.utils.sms_lib import SmsProxy
 import hmonitor.common.constants as constants
 
 class SmsAgent(BaseAgent):
 
-    def __init__(self, db, username, password,
+    def __init__(self, db, executor, username, password,
                  epid, endpoint, charset="gb2312"):
         super(SmsAgent, self).__init__(db)
         self.sms_proxy = SmsProxy(username=username,
@@ -14,6 +15,8 @@ class SmsAgent(BaseAgent):
                                   epid=epid,
                                   endpoint=endpoint,
                                   charset=charset)
+        self.executor_driver_name = executor
+        self.executor = get_executor(executor)
 
     def do_task(self):
         while True:
@@ -47,4 +50,4 @@ class SmsAgent(BaseAgent):
         users_id = self.db.get_users_id_by_trigger_name(event["trigger_name"])
         for user_id in users_id:
             user = self.db.get_user_by_id(user_id)
-            self._do_send_sms(user.get("phone", ""), msg, event)
+            #self._do_send_sms(user.get("phone", ""), msg, event)

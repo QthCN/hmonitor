@@ -2,16 +2,19 @@ import logging
 
 from hmonitor.agents import BaseAgent
 from hmonitor.utils import is_in_working_time_now
+from hmonitor.utils.executor import get_executor
 from hmonitor.utils.mail_lib import MailProxy
 
 class MailAgent(BaseAgent):
 
-    def __init__(self, db, api_user, api_key, sender, endpoint):
+    def __init__(self, db, executor, api_user, api_key, sender, endpoint):
         super(MailAgent, self).__init__(db)
         self.mail_proxy = MailProxy(api_user=api_user,
                                     api_key=api_key,
                                     sender=sender,
                                     endpoint=endpoint)
+        self.executor_driver_name = executor
+        self.executor = get_executor(executor)
 
     def do_task(self):
         while True:
@@ -47,4 +50,4 @@ class MailAgent(BaseAgent):
         users_id = self.db.get_users_id_by_trigger_name(event["trigger_name"])
         for user_id in users_id:
             user = self.db.get_user_by_id(user_id)
-            self._do_send_sms(user.get("mail", ""), msg, event)
+            #self._do_send_sms(user.get("mail", ""), msg, event)

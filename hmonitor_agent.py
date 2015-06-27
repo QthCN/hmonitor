@@ -30,13 +30,15 @@ define("sms_password", default="", help="sms password")
 define("sms_epid", default="", help="sms epid")
 define("sms_endpoint", default="", help="sms endpoint")
 define("sms_charset", default="gb2312", help="sms charset")
+#Executor
+define("executor_driver", default="ssh", help="remote executor driver")
 
 
 
 class Agent(object):
 
     def __init__(self, mysql_host, mysql_database, mysql_user, mysql_password,
-                 zabbix_user, zabbix_password, zabbix_url):
+                 zabbix_user, zabbix_password, zabbix_url, executor_driver):
         self.mysql_host = mysql_host
         self.mysql_database = mysql_database
         self.mysql_user = mysql_user
@@ -49,13 +51,16 @@ class Agent(object):
                              mysql_passwd=options.mysql_password,
                              mysql_host=options.mysql_host,
                              mysql_database=options.mysql_database)
+        self.executor = executor_driver
 
         self.notification_agents = [MailAgent(db=self.db,
+                                              executor=self.executor,
                                               api_user=options.mail_api_user,
                                               api_key=options.mail_api_key,
                                               sender=options.mail_sender,
                                               endpoint=options.mail_endpoint),
                                     SmsAgent(db=self.db,
+                                             executor=self.executor,
                                              username=options.sms_user,
                                              password=options.sms_password,
                                              epid=options.sms_epid,
@@ -123,7 +128,8 @@ def main():
                   mysql_password=options.mysql_password,
                   zabbix_user=options.zabbix_user,
                   zabbix_password=options.zabbix_password,
-                  zabbix_url=options.zabbix_url)
+                  zabbix_url=options.zabbix_url,
+                  executor_driver=options.executor_driver)
     agent.initialize()
     agent.run()
 
