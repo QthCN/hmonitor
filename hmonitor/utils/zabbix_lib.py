@@ -88,7 +88,7 @@ class ZabbixProxy(object):
                 r.append(t)
         r.sort()
 
-        cache.set_cached_content(method, r)
+        cache.set_cached_content(method, r, 1800)
         return r
 
     def get_triggers_name(self, only_hm=True):
@@ -103,7 +103,7 @@ class ZabbixProxy(object):
             if name and name not in triggers_name:
                 triggers_name.append(name.strip())
         triggers_name.sort()
-        cache.set_cached_content(method, triggers_name)
+        cache.set_cached_content(method, triggers_name, 1800)
         return triggers_name
 
     def get_triggers_info(self, only_hm=True):
@@ -121,7 +121,7 @@ class ZabbixProxy(object):
                 triggers_info[name.strip()] = dict(name=name.strip(),
                                                    priority=priority,
                                                    comments=comments.strip())
-        cache.set_cached_content(method, triggers_info)
+        cache.set_cached_content(method, triggers_info, 1800)
         return triggers_info
 
     def _parse_url(self, url):
