@@ -8,6 +8,11 @@
 {% block content %}
 
 <div class="row-fluid">
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>提示:</strong> “操作”的下拉框内容为自动修复脚本的名称，具体的修复说明可以在“自动修复”->“修复脚本”中查看。
+    </div>
+    <div class="block">
         <a href="#tablewidget" class="block-heading" data-toggle="collapse">绑定关系</a>
         <div id="tablewidget" class="block-body collapse in">
             <div class="stat-widget-container">
@@ -59,6 +64,7 @@
                 </table>
             </div>
         </div>
+    </div>
 </div>
 
 {% end %}
