@@ -1,4 +1,5 @@
 import datetime
+import os
 
 import hmonitor.common.constants as constants
 
@@ -47,3 +48,6 @@ def is_in_working_time(t):
 
 def is_in_working_time_now():
     return is_in_working_time(datetime.datetime.now())
+
+def get_current_file_path(f):
+    return os.path.split(os.path.realpath(f))[0]

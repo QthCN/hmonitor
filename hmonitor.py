@@ -4,6 +4,7 @@ import tornado
 import tornado.httpserver
 from tornado.options import define, options
 
+from hmonitor.autofix import load_autofix_scripts
 from hmonitor.handlers.events import (MyEventsHandler,
                                       AllEventsHandler)
 from hmonitor.handlers.alert import AlertHandler
@@ -53,6 +54,7 @@ class Application(tornado.web.Application):
             login_url="/login.html",
         )
         super(Application, self).__init__(handlers, **settings)
+        load_autofix_scripts()
 
 
 def main():
