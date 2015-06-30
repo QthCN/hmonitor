@@ -1,5 +1,4 @@
-import logging
-
+# -*- coding: utf-8 -*-
 
 class AutoFixBase(object):
 
@@ -17,3 +16,6 @@ class AutoFixBase(object):
 
     def get_description(self):
         return "NO DESCRIPTION"
+
+    def get_create_date(self):
+        return "2015-06-30 09:00:00"

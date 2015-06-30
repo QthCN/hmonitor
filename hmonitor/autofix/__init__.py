@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import imp
 import logging
 import os
@@ -8,6 +10,10 @@ from hmonitor.autofix.scripts import AutoFixBase
 
 
 autofix_scripts = dict()
+
+
+def get_autofix_scripts():
+    return autofix_scripts
 
 
 def load_autofix_scripts():
@@ -50,6 +56,7 @@ def load_autofix_scripts():
                         author=script.get_author(),
                         description=script.get_description(),
                         version=script.get_version(),
+                        create_date=script.get_create_date(),
                         mod=script,
                         fix_method=script.do_fix,
                     )

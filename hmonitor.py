@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 
 import tornado
@@ -11,6 +13,7 @@ from hmonitor.handlers.alert import AlertHandler
 from hmonitor.handlers.alerts import (MySubscribeAlertsHandler,
                                       SubscribeAlertsHandler,
                                       AlertsStatHandler)
+from hmonitor.handlers.autofix import (ShowScriptsHandler)
 from hmonitor.handlers.login import LoginHandler, LogoutHandler
 
 
@@ -36,6 +39,8 @@ class Application(tornado.web.Application):
             (r"/subscribealerts.html", SubscribeAlertsHandler),
             (r"/alertsstat.html", AlertsStatHandler),
 
+            (r"/autofixscriptslist.html", ShowScriptsHandler),
+
             (r"/alert", AlertHandler),
 
             (r"/login.html", LoginHandler),
@@ -54,11 +59,11 @@ class Application(tornado.web.Application):
             login_url="/login.html",
         )
         super(Application, self).__init__(handlers, **settings)
-        load_autofix_scripts()
 
 
 def main():
     tornado.options.parse_command_line()
+    load_autofix_scripts()
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.current().start()

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Based on https://github.com/alerta/zabbix-alerta
 
