@@ -1,5 +1,3 @@
-import logging
-
 from hmonitor.autofix.scripts import AutoFixBase
 
 
