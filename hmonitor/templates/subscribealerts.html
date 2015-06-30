@@ -50,7 +50,11 @@
                                 全部
                             </td>
                             <td>
-                                否
+                                {% if trigger_info["name"] in autofix_bindings%}
+                                    是
+                                {% else %}
+                                    否
+                                {%end %}
                             </td>
                             <td align="left">
                                 {% if trigger_info["name"] in triggers_subscribed %}

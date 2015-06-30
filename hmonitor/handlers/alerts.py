@@ -23,13 +23,23 @@ class SubscribeAlertsHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
+        def convert_list_to_dict(ls):
+            d = dict()
+            for l in ls:
+                name = l["trigger_name"]
+                d[name] = l
+            return d
         user = self.get_user()
         triggers_info = self.zabbix.get_triggers_info()
         triggers_subscribed = self.db.get_triggers_name_by_user_id(
             user.get("id", -1)
         )
+        autofix_bindings = convert_list_to_dict(
+            self.db.get_autofix_bindings()
+        )
         self.render("subscribealerts.html", triggers_info=triggers_info,
-                    triggers_subscribed=triggers_subscribed)
+                    triggers_subscribed=triggers_subscribed,
+                    autofix_bindings=autofix_bindings)
 
     @tornado.web.authenticated
     def post(self):
