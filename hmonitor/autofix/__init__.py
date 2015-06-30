@@ -7,6 +7,7 @@ import sys
 
 from hmonitor.utils import get_current_file_path
 from hmonitor.autofix.scripts import AutoFixBase
+from hmonitor.common.constants import UNBIND_AUTOFIX_SCRIPT_ACTION
 
 
 autofix_scripts = dict()
@@ -34,6 +35,11 @@ def load_autofix_scripts():
             logging.warn("{m} ALREADY LOADED, IGNORE IT.".format(
                 m=module_name
             ))
+            continue
+        if module_name == UNBIND_AUTOFIX_SCRIPT_ACTION:
+            logging.warn("MODULE NAME IS cancel, IGNORE IT.")
+            continue
+
         logging.debug("LOAD {m} FROM {f}".format(m=module_name, f=file_))
 
         sys_mod = None

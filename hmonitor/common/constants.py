@@ -16,3 +16,6 @@ ZBX_SEVERITY_MAP = {
     'Information':    'informational',
     'Not classified': 'unknown',
 }
+
+# NOTE(tianhuan) Don't change this value, some codes depend on it.
+UNBIND_AUTOFIX_SCRIPT_ACTION = "cancel"

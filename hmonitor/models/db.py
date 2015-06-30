@@ -269,3 +269,32 @@ class HMonitorDB(object):
         with DB(**self.db_dict) as db:
             bindings = db.query("SELECT * FROM AUTOFIX_BINDING")
             return bindings
+
+    def bind_autofix(self, trigger_name, username, script):
+        with DB(**self.db_dict) as db:
+            db._db.autocommit(False)
+
+            binding = db.query("SELECT * FROM AUTOFIX_BINDING "
+                               "WHERE TRIGGER_NAME='{t}'".format(
+                t=trigger_name
+            ))
+            if len(binding) == 0:
+                sql = ("INSERT INTO AUTOFIX_BINDING "
+                       "(TRIGGER_NAME, AUTO_FIX_SCRIPT, CHANGE_USER, "
+                       "CHANGE_DATE) VALUES ('{t}', '{s}', "
+                       "'{u}', NOW())".format(t=trigger_name, s=script,
+                                              u=username))
+            else:
+                sql = ("UPDATE AUTOFIX_BINDING SET AUTO_FIX_SCRIPT='{s}', "
+                       "CHANGE_USER='{u}', CHANGE_DATE=NOW() WHERE "
+                       "TRIGGER_NAME='{t}'".format(s=script,
+                                                   u=username,
+                                                   t=trigger_name))
+            db.execute(sql)
+
+            db._db.commit()
+
+    def unbind_autofix(self, trigger_name):
+        with DB(**self.db_dict) as db:
+            db.execute("DELETE FROM AUTOFIX_BINDING WHERE "
+                       "TRIGGER_NAME ='{t}'".format(t=trigger_name))

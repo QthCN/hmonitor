@@ -5,6 +5,7 @@ import logging
 import tornado.web
 
 from hmonitor.autofix import get_autofix_scripts
+from hmonitor.common.constants import UNBIND_AUTOFIX_SCRIPT_ACTION
 from hmonitor.handlers import BaseHandler
 
 class ShowScriptsHandler(BaseHandler):
@@ -33,3 +34,18 @@ class BindScriptHandler(BaseHandler):
         )
         self.render("autofixbinding.html", scripts=scripts,
                     triggers=triggers, bindings=bindings)
+
+    @tornado.web.authenticated
+    def post(self):
+        new_script = self.request.arguments.get("v")[0]
+        trigger_name = self.request.arguments.get("t")[0]
+        username = self.get_user().get("name")
+        try:
+            if new_script == UNBIND_AUTOFIX_SCRIPT_ACTION:
+                self.db.unbind_autofix(trigger_name)
+            else:
+                self.db.bind_autofix(trigger_name, username, new_script)
+        except Exception as e:
+            logging.exception(e)
+            # TODO(tianhuan) Use another code here?
+            raise tornado.httpclient.HTTPError(400)
