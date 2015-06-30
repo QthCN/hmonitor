@@ -11,7 +11,7 @@
         <a href="#tablewidget" class="block-heading" data-toggle="collapse">脚本列表</a>
         <div id="tablewidget" class="block-body collapse in">
             <div class="stat-widget-container">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-bordered">
                     <tr>
                         <th>脚本名</th>
                         <th>说明</th>
@@ -42,17 +42,5 @@
             </div>
         </div>
 </div>
-
-{% end %}
-
-{% block js %}
-
-function reload_page() {
-    location.reload();
-}
-
-$(function(){
-    setInterval("reload_page()", 300000);
-});
 
 {% end %}

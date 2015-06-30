@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block page-title %}绑定关系{% end %}
+
+{% block dir-parent %}自动修复{% end %}
+{% block dir-leaf %}绑定关系{% end %}
+
+{% block content %}
+
+<div class="row-fluid">
+        <a href="#tablewidget" class="block-heading" data-toggle="collapse">绑定关系</a>
+        <div id="tablewidget" class="block-body collapse in">
+            <div class="stat-widget-container">
+                <table class="table table-hover table-striped table-bordered">
+                    <tr>
+                        <th>告警项</th>
+                        <th>绑定脚本</th>
+                        <th>绑定者</th>
+                        <th>绑定时间</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for trigger in triggers %}
+                        <tr>
+                            <td align="left">
+                                {{ trigger }}
+                            </td>
+                            <td align="left">
+                                {% if trigger in bindings %}
+                                    bindings[trigger]["auto_fix_script"]
+                                {% else %}
+                                    -
+                                {% end %}
+                            </td>
+                            <td align="left">
+                                {% if trigger in bindings %}
+                                    bindings[trigger]["change_user"]
+                                {% else %}
+                                    -
+                                {% end %}
+                            </td>
+                            <td align="left">
+                                {% if trigger in bindings %}
+                                    bindings[trigger]["change_date"]
+                                {% else %}
+                                    -
+                                {% end %}
+                            </td>
+                            <td align="left">
+                                绑定
+                            </td>
+                        </tr>
+                    {% end %}
+                </table>
+            </div>
+        </div>
+</div>
+
+{% end %}
+
+{% block js %}
+
+
+{% end %}

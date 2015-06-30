@@ -264,3 +264,8 @@ class HMonitorDB(object):
                 phone = phone or "NOTEXISTPHONE"
             ))
             return msg
+
+    def get_autofix_bindings(self):
+        with DB(**self.db_dict) as db:
+            bindings = db.query("SELECT * FROM AUTOFIX_BINDING")
+            return bindings

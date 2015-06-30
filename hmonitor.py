@@ -13,7 +13,8 @@ from hmonitor.handlers.alert import AlertHandler
 from hmonitor.handlers.alerts import (MySubscribeAlertsHandler,
                                       SubscribeAlertsHandler,
                                       AlertsStatHandler)
-from hmonitor.handlers.autofix import (ShowScriptsHandler)
+from hmonitor.handlers.autofix import (ShowScriptsHandler,
+                                       BindScriptHandler)
 from hmonitor.handlers.login import LoginHandler, LogoutHandler
 
 
@@ -40,6 +41,7 @@ class Application(tornado.web.Application):
             (r"/alertsstat.html", AlertsStatHandler),
 
             (r"/autofixscriptslist.html", ShowScriptsHandler),
+            (r"/autofixbinding.html", BindScriptHandler),
 
             (r"/alert", AlertHandler),
 
