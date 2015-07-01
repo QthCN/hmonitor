@@ -34,6 +34,7 @@ class AutoFixProxy(object):
             b. last autofix result is success
             c. last autofix result is fixing or failed,
                but happened in 30 minutes before
+            d. last autofix result is fixing, and happened in 5 minutes
 
         """
 
@@ -51,11 +52,16 @@ class AutoFixProxy(object):
         autofix_logs = self.db.get_autofix_logs(trigger_name=trigger_name,
                                                 hostname=hostname,
                                                 last_minutes=30)
+        autofix_logs2 = self.db.get_autofix_logs(trigger_name=trigger_name,
+                                                 hostname=hostname,
+                                                 last_minutes=5)
         if (len(autofix_logs) == 0 or
             autofix_logs[-1]["status"] == AUTOFIX_STATUS["success"] or
             (len([l for l in autofix_logs if l["status"] in (
                 AUTOFIX_STATUS["fixing"], AUTOFIX_STATUS["failed"]
-            )]) == 0)):
+            )]) == 0) or
+            (len(autofix_logs2) > 0 and
+                autofix_logs2[-1]["status"] == AUTOFIX_STATUS["fixing"])):
             return self._send_autofix_request(event)
         else:
             logging.debug("THIS EVENT'S AUTOFIX LOG IS FIXING OR FAILED "
@@ -147,7 +153,10 @@ class AutoFixManager(object):
                 script=autofix_script,
                 event_id=event["event_id"]
             )
-            self._do_autofix(event, autofix_script, log_id)
+            if log_id is None:
+                logging.warn("AUTOFIX ALREADY IN WORKING, IGNORE THIS EVENT.")
+            else:
+                self._do_autofix(event, autofix_script, log_id)
         except Exception as e:
             logging.exception(e)
             if log_id:

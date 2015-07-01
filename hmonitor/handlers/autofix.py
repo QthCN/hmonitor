@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import logging
 import json
 
 import tornado.web
 
 from hmonitor.autofix import get_autofix_scripts
-from hmonitor.common.constants import UNBIND_AUTOFIX_SCRIPT_ACTION
+from hmonitor.common.constants import (UNBIND_AUTOFIX_SCRIPT_ACTION,
+                                       AUTOFIX_STATUS)
 from hmonitor.handlers import BaseHandler
 from hmonitor.utils import convert_str_to_datetime
 
@@ -65,3 +67,60 @@ class AutoFixHandler(BaseHandler):
             event["last_occur_time"]
         )
         am.add_task(event)
+
+
+class AutoFixStatHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self):
+        last_24_hours_logs = self.db.get_all_autofix_logs(last_day=1)
+        last_7_days_logs = self.db.get_all_autofix_logs(last_day=7)
+
+        last_7_day_success_logs = 0.0
+        last_7_day_fixing_logs = 0.0
+        last_7_day_failed_logs = 0.0
+        for l in last_7_days_logs:
+            if l["status"] == AUTOFIX_STATUS["success"]:
+                last_7_day_success_logs += 1.0
+            elif l["status"] == AUTOFIX_STATUS["fixing"]:
+                last_7_day_fixing_logs += 1.0
+            else:
+                last_7_day_failed_logs += 1.0
+
+        last_7_day_trend, keys = self._get_cataloged_logs(last_7_days_logs)
+
+        self.render("autofixstat.html",
+                    last_24_hours_logs=last_24_hours_logs,
+                    last_7_days_logs=last_7_days_logs,
+                    last_7_day_success_logs=last_7_day_success_logs,
+                    last_7_day_fixing_logs=last_7_day_fixing_logs,
+                    last_7_day_failed_logs=last_7_day_failed_logs,
+                    last_7_day_trend=last_7_day_trend, keys=keys)
+
+    def _get_cataloged_logs(self, logs):
+        result = dict()
+        keys = []
+        now = datetime.datetime.now()
+        today = datetime.datetime.strptime(now.strftime("%Y-%m-%d 23:59:59"),
+                                           "%Y-%m-%d 23:59:59")
+        for d in range(0, 7):
+            day = today - datetime.timedelta(hours=24*d)
+            day_add_1_day = day + datetime.timedelta(hours=24)
+            k = day.strftime("%Y-%m-%d")
+            keys.append(k.strip())
+            result[k] = dict(
+                success=0,
+                failed=0,
+                fixing=0
+            )
+            for l in logs:
+                if (l["begin_time"] < day_add_1_day and
+                        l["begin_time"] >= day):
+                    if l["status"] == AUTOFIX_STATUS["success"]:
+                        result[k]["success"] += 1
+                    elif l["status"] == AUTOFIX_STATUS["failed"]:
+                        result[k]["failed"] += 1
+                    elif l["status"] == AUTOFIX_STATUS["fixing"]:
+                        result[k]["fixing"] += 1
+        return result, keys
+

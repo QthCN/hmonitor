@@ -319,6 +319,14 @@ class HMonitorDB(object):
             ))
             return logs
 
+    def get_all_autofix_logs(self, last_day=7):
+        with DB(**self.db_dict) as db:
+            logs = db.query("SELECT * FROM AUTOFIX_LOG "
+                            "WHERE DATE_SUB(NOW(), INTERVAL {t} DAY) < "
+                            "BEGIN_TIME ORDER BY BEGIN_TIME DESC "
+                            "".format(t=last_day))
+            return logs
+
     def create_autofix_log(self, trigger_name, hostname, script, event_id):
         with DB(**self.db_dict) as db:
             db._db.autocommit(False)

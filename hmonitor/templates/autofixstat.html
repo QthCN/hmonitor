@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block page-title %}修复统计{% end %}
+
+{% block dir-parent %}自动修复{% end %}
+{% block dir-leaf %}修复统计{% end %}
+
+{% block content %}
+
+<div class="row-fluid">
+    <div class="block span4">
+        <a href="#tablewidget1" class="block-heading" data-toggle="collapse">7天修复比率</a>
+        <div id="tablewidget1" class="block-body collapse in">
+            <div class="stat-widget-container">
+                <div id="container1" style="min-width: 250px; height: 250px; max-width: 600px; margin: 0 auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="block span8">
+        <a href="#tablewidget2" class="block-heading" data-toggle="collapse">7天修复趋势</a>
+        <div id="tablewidget2" class="block-body collapse in">
+            <div class="stat-widget-container">
+                <div id="container2" style="min-width: 310px; height: 250px; margin: 0 auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="block span12">
+        <a href="#tablewidget3" class="block-heading" data-toggle="collapse">24小时内修复日志</a>
+        <div id="tablewidget3" class="block-body collapse in">
+            <div class="stat-widget-container">
+                <table class="table table-hover">
+                    <tr>
+                        <th>告警名</th>
+                        <th>主机</th>
+                        <th>发生时间</th>
+                        <th>修复状态</th>
+                        <th>说明</th>
+                    </tr>
+                    {% for log in last_24_hours_logs %}
+                        <tr{% if log["status"] == "FAILED"%}
+                                class="error"
+                           {% else %}
+                                class="info"
+                           {% end %}>
+                            <td align="left">
+                                {{ log["trigger_name"] }}
+                            </td>
+                            <td align="left">
+                                {{ log["hostname"] }}
+                            </td>
+                            <td align="left">
+                                {{ log["begin_time"] }}
+                            </td>
+                            <td align="left">
+                                {{ log["status"] }}
+                            </td>
+                            <td align="left">
+                                {{ log["comments"] }}
+                            </td>
+                        </tr>
+                    {% end %}
+                </table>
+            </div>
+        </div>
+</div>
+
+<script src="{{static_url("highcharts.js")}}"></script>
+<script src="{{static_url("exporting.js")}}"></script>
+
+{% end %}
+
+{% block js %}
+$(function () {
+    $('#container1').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title :{
+            text:null
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            colorByPoint: true,
+            data: [{
+                name: "FIXING",
+                y: {{ last_7_day_fixing_logs/len(last_7_days_logs) }}
+            }, {
+                name: "SUCCESS",
+                y: {{ last_7_day_success_logs/len(last_7_days_logs) }}
+            }, {
+                name: "FAILED",
+                y: {{ last_7_day_failed_logs/len(last_7_days_logs) }}
+            }]
+        }]
+    });
+});
+
+
+$(function () {
+    $('#container2').highcharts({
+        title: {
+            text: null
+        },
+        xAxis: {
+            categories: ['{{ keys[6] }}','{{ keys[5] }}','{{ keys[4] }}','{{ keys[3] }}','{{ keys[2] }}','{{ keys[1] }}','{{ keys[0] }}']
+        },
+        yAxis: {
+            title: {
+                text: null
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: 'SUCCESS',
+            data: [{{ last_7_day_trend[keys[6]]["success"] }}, {{ last_7_day_trend[keys[5]]["success"] }}, {{ last_7_day_trend[keys[4]]["success"] }}, {{ last_7_day_trend[keys[3]]["success"] }}, {{ last_7_day_trend[keys[2]]["success"] }}, {{ last_7_day_trend[keys[1]]["success"] }}, {{ last_7_day_trend[keys[0]]["success"] }}]
+        }, {
+            name: 'FAILED',
+            data: [{{ last_7_day_trend[keys[6]]["failed"] }}, {{ last_7_day_trend[keys[5]]["failed"] }}, {{ last_7_day_trend[keys[4]]["failed"] }}, {{ last_7_day_trend[keys[3]]["failed"] }}, {{ last_7_day_trend[keys[2]]["failed"] }}, {{ last_7_day_trend[keys[1]]["failed"] }}, {{ last_7_day_trend[keys[0]]["failed"] }}]
+        }, {
+            name: 'FIXING',
+            data: [{{ last_7_day_trend[keys[6]]["fixing"] }}, {{ last_7_day_trend[keys[5]]["fixing"] }}, {{ last_7_day_trend[keys[4]]["fixing"] }}, {{ last_7_day_trend[keys[3]]["fixing"] }}, {{ last_7_day_trend[keys[2]]["fixing"] }}, {{ last_7_day_trend[keys[1]]["fixing"] }}, {{ last_7_day_trend[keys[0]]["fixing"] }}]
+        }]
+    });
+});
+{% end %}

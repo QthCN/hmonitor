@@ -15,6 +15,7 @@ from hmonitor.handlers.alerts import (MySubscribeAlertsHandler,
                                       SubscribeAlertsHandler,
                                       AlertsStatHandler)
 from hmonitor.handlers.autofix import (AutoFixHandler,
+                                       AutoFixStatHandler,
                                        ShowScriptsHandler,
                                        BindScriptHandler)
 from hmonitor.handlers.login import LoginHandler, LogoutHandler
@@ -49,6 +50,7 @@ class Application(tornado.web.Application):
 
             (r"/autofixscriptslist.html", ShowScriptsHandler),
             (r"/autofixbinding.html", BindScriptHandler),
+            (r"/autofixstat.html", AutoFixStatHandler),
 
             (r"/autofix", AutoFixHandler),
 
