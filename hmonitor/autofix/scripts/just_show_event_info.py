@@ -4,8 +4,8 @@ from hmonitor.autofix.scripts import AutoFixBase
 
 class JustShowEventInfo(AutoFixBase):
 
-    def do_fix(self, event):
-        print "in JustShowEventInfo"
+    def do_fix(self, trigger_name, hostname, executor, event):
+        raise Exception("in JustShowEventInfo")
 
     def get_author(self):
         return "Qin TianHuan"

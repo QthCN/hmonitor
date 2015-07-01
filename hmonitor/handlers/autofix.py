@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import json
 
 import tornado.web
 
 from hmonitor.autofix import get_autofix_scripts
 from hmonitor.common.constants import UNBIND_AUTOFIX_SCRIPT_ACTION
 from hmonitor.handlers import BaseHandler
+from hmonitor.utils import convert_str_to_datetime
 
 class ShowScriptsHandler(BaseHandler):
 
@@ -49,3 +51,17 @@ class BindScriptHandler(BaseHandler):
             logging.exception(e)
             # TODO(tianhuan) Use another code here?
             raise tornado.httpclient.HTTPError(400)
+
+
+class AutoFixHandler(BaseHandler):
+
+    def post(self):
+        event = json.loads(self.request.body)
+        am = self.application.autofix_manager
+        event["first_occur_time"] = convert_str_to_datetime(
+            event["first_occur_time"]
+        )
+        event["last_occur_time"] = convert_str_to_datetime(
+            event["last_occur_time"]
+        )
+        am.add_task(event)

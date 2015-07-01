@@ -19,3 +19,9 @@ ZBX_SEVERITY_MAP = {
 
 # NOTE(tianhuan) Don't change this value, some codes depend on it.
 UNBIND_AUTOFIX_SCRIPT_ACTION = "cancel"
+
+AUTOFIX_STATUS = dict(
+    success="SUCCESS",
+    fixing="FIXING",
+    failed="FAILED"
+)

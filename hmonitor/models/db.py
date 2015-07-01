@@ -217,6 +217,14 @@ class HMonitorDB(object):
 
             db._db.commit()
 
+    def expire_trigger_event(self, event_id):
+        with DB(**self.db_dict) as db:
+            db.execute("UPDATE TRIGGER_EVENTS SET STATUS='{status}' "
+                       "WHERE ID={event_id}".format(
+                status=constants.TRIGGER_EVENT_STATUS["expired"],
+                event_id=event_id
+            ))
+
     def get_trigger_events_in_problem(self):
         with DB(**self.db_dict) as db:
             events = db.query("SELECT * FROM TRIGGER_EVENTS "
@@ -275,7 +283,7 @@ class HMonitorDB(object):
             db._db.autocommit(False)
 
             binding = db.query("SELECT * FROM AUTOFIX_BINDING "
-                               "WHERE TRIGGER_NAME='{t}'".format(
+                               "WHERE TRIGGER_NAME='{t}' FOR UPDATE".format(
                 t=trigger_name
             ))
             if len(binding) == 0:
@@ -298,3 +306,65 @@ class HMonitorDB(object):
         with DB(**self.db_dict) as db:
             db.execute("DELETE FROM AUTOFIX_BINDING WHERE "
                        "TRIGGER_NAME ='{t}'".format(t=trigger_name))
+
+    def get_autofix_logs(self, trigger_name, hostname, last_minutes=30):
+        with DB(**self.db_dict) as db:
+            logs = db.query("SELECT * FROM AUTOFIX_LOG "
+                            "WHERE TRIGGER_NAME='{t}' AND HOSTNAME='{h}' "
+                            "AND DATE_SUB(NOW(), INTERVAL {ti} MINUTE) < "
+                            "BEGIN_TIME ORDER BY BEGIN_TIME ASC".format(
+                t=trigger_name,
+                h=hostname,
+                ti=last_minutes
+            ))
+            return logs
+
+    def create_autofix_log(self, trigger_name, hostname, script, event_id):
+        with DB(**self.db_dict) as db:
+            db._db.autocommit(False)
+
+            logs = db.query("SELECT * FROM AUTOFIX_LOG "
+                            "WHERE TRIGGER_NAME='{t}' AND HOSTNAME='{h}' "
+                            "AND DATE_SUB(NOW(), INTERVAL 10 MINUTE) < "
+                            "BEGIN_TIME AND STATUS='{s}' FOR UPDATE".format(
+                t=trigger_name,
+                h=hostname,
+                s=constants.AUTOFIX_STATUS["fixing"]
+            ))
+
+            if len(logs) > 0:
+                db._db.commit()
+                return None
+
+            db.execute("INSERT INTO AUTOFIX_LOG (TRIGGER_NAME, HOSTNAME, "
+                       "SCRIPT, BEGIN_TIME, STATUS, EVENT_ID) VALUES ( "
+                       "'{t}', '{h}', '{s}', NOW(), '{st}', {e})".format(
+                t=trigger_name,
+                h=hostname,
+                s=script,
+                st=constants.AUTOFIX_STATUS["fixing"],
+                e=event_id
+            ))
+
+            # TODO(tianhuan) can we get this id in another way?
+            logs = db.query("SELECT * FROM AUTOFIX_LOG "
+                            "WHERE TRIGGER_NAME='{t}' AND HOSTNAME='{h}' "
+                            "AND DATE_SUB(NOW(), INTERVAL 1 MINUTE) < "
+                            "BEGIN_TIME AND STATUS='{s}' FOR UPDATE".format(
+                t=trigger_name,
+                h=hostname,
+                s=constants.AUTOFIX_STATUS["fixing"]
+            ))
+
+            db._db.commit()
+            return logs[-1]["id"]
+
+    def update_autofix_log(self, log_id, status, comments):
+        comments.replace("\"", "'")
+        with DB(**self.db_dict) as db:
+            db.execute("UPDATE AUTOFIX_LOG SET STATUS='{s}', "
+                       "COMMENTS=\"{c}\" WHERE ID={i}".format(
+                s=status,
+                c=comments,
+                i=log_id
+            ))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import json
 import os
 
 import hmonitor.common.constants as constants
@@ -53,3 +54,19 @@ def is_in_working_time_now():
 
 def get_current_file_path(f):
     return os.path.split(os.path.realpath(f))[0]
+
+class DatetimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
+
+datetime_fmt = "%b-%d-%y %H:%M:%S"
+
+def convert_datetime_to_str(d):
+    return d.strftime(datetime_fmt);
+
+def convert_str_to_datetime(s):
+    return datetime.datetime.strptime(s, datetime_fmt)
+

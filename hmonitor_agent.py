@@ -9,6 +9,7 @@ from tornado.options import define, options
 
 from hmonitor.agents.mail_agent import MailAgent
 from hmonitor.agents.sms_agent import SmsAgent
+from hmonitor.autofix.manager import AutoFixProxy
 from hmonitor.models.db import HMonitorDB
 
 
@@ -34,6 +35,11 @@ define("sms_endpoint", default="", help="sms endpoint")
 define("sms_charset", default="gb2312", help="sms charset")
 #Executor
 define("executor_driver", default="ssh", help="remote executor driver")
+define("executor_user", default="stack", help="remote executor user")
+#Autofix
+define("autofix_url", default="http://127.0.0.1:8888/autofix",
+       help="autofix url")
+
 
 
 
@@ -68,15 +74,18 @@ class Agent(object):
                                              epid=options.sms_epid,
                                              endpoint=options.sms_endpoint,
                                              charset=options.sms_charset)]
+        self.am = AutoFixProxy(db=self.db, executor=self.executor,
+                               url=options.autofix_url)
 
     def initialize(self):
         for agent in self.notification_agents:
             agent.initialize()
 
     def _auto_fix(self, event):
-        # TODO(tianhuan) add auto fix here
         logging.debug("BEGIN AUTO FIX ON EVENT: {0}".format(event))
-        return False
+        result = self.am.do_fix(event)
+        logging.debug("AUTOFIX RESULT IS: {0}".format(result))
+        return result
 
     def _get_history_key(self, event):
         return "{t}_{h}".format(t=event["trigger_name"], h=event["hostname"])
@@ -89,6 +98,7 @@ class Agent(object):
         for event in events:
             if self._auto_fix(event):
                 # TODO(tianhuan) send notification here?
+                self.db.expire_trigger_event(event["id"])
                 continue
             else:
                 h_key = self._get_history_key(event)

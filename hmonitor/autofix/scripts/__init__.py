@@ -5,7 +5,7 @@ class AutoFixBase(object):
     def __init__(self):
         pass
 
-    def do_fix(self, event):
+    def do_fix(self, trigger_name, hostname, executor, event):
         pass
 
     def get_author(self):
