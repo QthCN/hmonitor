@@ -3,6 +3,7 @@
 import logging
 
 import tornado.web
+import tornado.httpclient
 
 from hmonitor.handlers import BaseHandler
 

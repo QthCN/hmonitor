@@ -64,8 +64,8 @@ class AutoFixProxy(object):
                 autofix_logs2[-1]["status"] == AUTOFIX_STATUS["fixing"])):
             return self._send_autofix_request(event)
         else:
-            logging.debug("THIS EVENT'S AUTOFIX LOG IS FIXING OR FAILED "
-                          "IN LAST 30 MINUTES. IGNORE IT")
+            logging.warn("THIS EVENT'S AUTOFIX LOG IS FIXING OR FAILED "
+                         "IN LAST 30 MINUTES. IGNORE IT")
             return False
 
     def _send_autofix_request(self, event):

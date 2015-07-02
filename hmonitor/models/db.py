@@ -105,6 +105,11 @@ class HMonitorDB(object):
             ))
             return len(users) > 0
 
+    def update_password(self, name, passwd):
+        with DB(**self.db_dict) as db:
+            db.execute("UPDATE USERS SET PASSWORD=PASSWORD('{p}') "
+                       "WHERE NAME='{n}'".format(p=passwd, n=name))
+
     def create_user(self, name, mail, phone, passwd):
         with DB(**self.db_dict) as db:
             db.execute("INSERT INTO USERS (name, mail, phone, password) "

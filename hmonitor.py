@@ -10,6 +10,7 @@ from hmonitor.autofix import load_autofix_scripts
 from hmonitor.autofix.manager import AutoFixManager
 from hmonitor.handlers.events import (MyEventsHandler,
                                       AllEventsHandler)
+from hmonitor.handlers.account import AccoundPasswordHandler
 from hmonitor.handlers.alert import AlertHandler
 from hmonitor.handlers.alerts import (MySubscribeAlertsHandler,
                                       SubscribeAlertsHandler,
@@ -51,6 +52,8 @@ class Application(tornado.web.Application):
             (r"/autofixscriptslist.html", ShowScriptsHandler),
             (r"/autofixbinding.html", BindScriptHandler),
             (r"/autofixstat.html", AutoFixStatHandler),
+
+            (r"/accountupdatepassword.html", AccoundPasswordHandler),
 
             (r"/autofix", AutoFixHandler),
 
