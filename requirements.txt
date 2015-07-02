@@ -1,5 +1,5 @@
 tornado>=4.2
-torndb=0.3 # 0.3 is ok, not sure if other versions can work.
+torndb==0.3 # 0.3 is ok, not sure if other versions can work.
 requests>=2.7.0
 six>=1.9.0
 stevedore>=1.5.0
