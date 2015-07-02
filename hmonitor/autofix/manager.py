@@ -65,7 +65,10 @@ class AutoFixProxy(object):
             return self._send_autofix_request(event)
         else:
             logging.warn("THIS EVENT'S AUTOFIX LOG IS FIXING OR FAILED "
-                         "IN LAST 30 MINUTES. IGNORE IT")
+                         "IN LAST 30 MINUTES. IGNORE IT. {e} on {h}".format(
+                e=trigger_name,
+                h=hostname
+            ))
             return False
 
     def _send_autofix_request(self, event):
@@ -154,7 +157,8 @@ class AutoFixManager(object):
                 event_id=event["event_id"]
             )
             if log_id is None:
-                logging.warn("AUTOFIX ALREADY IN WORKING, IGNORE THIS EVENT.")
+                logging.warn("AUTOFIX ALREADY IN WORKING, IGNORE THIS EVENT "
+                             "{e}.".format(e=event["trigger_name"]))
             else:
                 self._do_autofix(event, autofix_script, log_id)
         except Exception as e:

@@ -120,16 +120,23 @@ class Agent(object):
         for agent in self.notification_agents:
             agent.run()
 
+    def _run(self):
+        # Expire events
+        self.db.expire_trigger_events()
+        # Trigger actions
+        events = self.db.get_trigger_events_in_problem()
+        logging.debug("Events in problem:\n {0}".format(events))
+        self._do_actions(events)
+
     def run(self):
         self._run_notification_agents()
         while True:
-            # Expire events
-            self.db.expire_trigger_events()
-            # Trigger actions
-            events = self.db.get_trigger_events_in_problem()
-            logging.debug("Events in problem:\n {0}".format(events))
-            self._do_actions(events)
-            time.sleep(30)
+            try:
+                self._run()
+                time.sleep(30)
+            except Exception as e:
+                # TODO(tianhuan) use specific exception here
+                logging.exception(e)
 
 
 def main():
