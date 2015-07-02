@@ -12,4 +12,4 @@ HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动
 系统架构
 --------
 
-![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/framework.jpg)
+[[ https://github.com/QthCN/hmonitor/blob/master/docs/images/framework.jpg | height = 100px ]]
