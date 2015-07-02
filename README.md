@@ -23,3 +23,9 @@ HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动
 7. 执行hmonitor_agent.py即可运行HMonitor Agent
 
 HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动处理的主机较多，可以启动多个HMonitor/AutoFixer并将他们放在如nginx之类的LB后面。
+
+## 使用
+
+### 订阅管理
+
+点击*订阅告警*，即可查看所有可以被订阅的告警。如果对某个告警赶兴趣则可以在操作栏下点击*订阅告警*
