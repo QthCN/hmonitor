@@ -41,7 +41,7 @@ class ZabbixProxy(object):
         http_client.close()
         logging.debug("REQUEST RESULT IS: {result}".format(result=result))
 
-        if "error" in result:
+        if result and "error" in result:
             logging.error(result["error"])
 
         return result
@@ -66,14 +66,28 @@ class ZabbixProxy(object):
         if cache.get_cached_content(method):
             return cache.get_cached_content(method)
 
-        request_body = dict(jsonrpc="2.0",
-                            method=method,
-                            params=dict(output="extend",
-                                        selectFunctions="extend"),
-                            id=self.get_request_id(),
-                            auth=self.get_token())
-        response = self.do_request(request_body)
-        triggers = response.get("result", [])
+        tmp = dict()
+
+        def _get_trigger_info(k):
+            request_body = dict(jsonrpc="2.0",
+                                method=method,
+                                params=dict(output=[k]),
+                                id=self.get_request_id(),
+                                auth=self.get_token())
+            response = self.do_request(request_body)
+            triggers = response.get("result", [])
+            for trigger in triggers:
+                if trigger["triggerid"] in tmp:
+                    tmp[trigger["triggerid"]][k] = trigger[k]
+                else:
+                    tmp[trigger["triggerid"]] = {k: trigger[k]}
+
+        _get_trigger_info("description")
+        _get_trigger_info("comments")
+        _get_trigger_info("priority")
+        print tmp
+
+        triggers = tmp.values()
 
         if only_hm is False:
             result = triggers

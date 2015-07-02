@@ -16,7 +16,7 @@ def get_cached_content(key):
         return v["value"]
 
 
-def set_cached_content(key, value, cache_time=300):
+def set_cached_content(key, value, cache_time=10800):
     cache_dict[key] = dict(added_time=datetime.datetime.now(),
                            value=value,
                            cache_time=cache_time)

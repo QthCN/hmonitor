@@ -105,13 +105,13 @@ $(function () {
             colorByPoint: true,
             data: [{
                 name: "FIXING",
-                y: {{ last_7_day_fixing_logs/len(last_7_days_logs) }}
+                y: {{ last_7_day_fixing_logs/(len(last_7_days_logs)+1) }}
             }, {
                 name: "SUCCESS",
-                y: {{ last_7_day_success_logs/len(last_7_days_logs) }}
+                y: {{ (last_7_day_success_logs+1)/(len(last_7_days_logs)+1) }}
             }, {
                 name: "FAILED",
-                y: {{ last_7_day_failed_logs/len(last_7_days_logs) }}
+                y: {{ last_7_day_failed_logs/(len(last_7_days_logs)+1) }}
             }]
         }]
     });
