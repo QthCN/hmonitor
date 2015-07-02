@@ -111,4 +111,6 @@ class JustShowEventInfo(AutoFixBase):
 
 注意，executor执行的命令是发生在产生告警的主机上的。
 
-由于远程执行命令存在较多的安全隐患，所以根据实际情况可以选择不同的executor类型。如果要实现一个新的executor类型，则可以仿造hmonitor/utils/executor/ssh.py进行开发。实现积累的方法即可。实际使用的时候，配置文件中的”executor_driver“改成新实现的executor类型即可。无需改动其它已有代码。
+由于远程执行命令存在较多的安全隐患，所以根据实际情况可以选择不同的executor类型。如果要实现一个新的executor类型，则可以仿造hmonitor/utils/executor/ssh.py进行开发。实现基类的方法即可。实际使用的时候，配置文件中的”executor_driver“改成新实现的executor类型即可。无需改动其它已有代码。
+
+对于自动修复脚本，如果一切执行顺利，则do_fix直接返回即可。如果修复过程中出现了意外，比如do_fix当前的逻辑无法修复某个问题，则直接抛出异常即可。比如上面的样例程序，其do_fix直接抛出了异常，因此HMonitor会捕获这个异常，知道自动修复失败了，然后告警会发给相应的告警接收人，由接收人进行处理。异常信息中建议写明原因，之后可以在”修复统计“页面看到失败的原因。
