@@ -11,3 +11,15 @@ HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动
 ## 系统架构
 
 ![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/framework.jpg)
+
+## 安装
+
+1. 在Zabbix处配置script类型的媒体类型，脚本设置为HMonitor源码目录下的scripts/zabbix_hm.py
+2. 配置trigger，trigger名需要以HM-打头
+3. 配置相应的接收告警用户，用户的send to配置为HMonitor的地址
+4. 在某台主机安装MySQL
+5. 执行HMonitor源码目录下的db.sql建立对应的表
+6. 执行hmonitor.py即可运行HMonitor/AutoFixer
+7. 执行hmonitor_agent.py即可运行HMonitor Agent
+
+HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动处理的主机较多，可以启动多个HMonitor/AutoFixer并将他们放在如nginx之类的LB后面。
