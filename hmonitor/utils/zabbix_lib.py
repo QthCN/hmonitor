@@ -85,7 +85,6 @@ class ZabbixProxy(object):
         _get_trigger_info("description")
         _get_trigger_info("comments")
         _get_trigger_info("priority")
-        print tmp
 
         triggers = tmp.values()
 
