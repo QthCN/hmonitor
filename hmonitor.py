@@ -14,7 +14,8 @@ from hmonitor.handlers.account import AccoundPasswordHandler
 from hmonitor.handlers.alert import AlertHandler
 from hmonitor.handlers.alerts import (MySubscribeAlertsHandler,
                                       SubscribeAlertsHandler,
-                                      AlertsStatHandler)
+                                      AlertsStatHandler,
+                                      AlertFilterHandler)
 from hmonitor.handlers.autofix import (AutoFixHandler,
                                        AutoFixStatHandler,
                                        ShowScriptsHandler,
@@ -48,6 +49,7 @@ class Application(tornado.web.Application):
             (r"/mysubscribealerts.html", MySubscribeAlertsHandler),
             (r"/subscribealerts.html", SubscribeAlertsHandler),
             (r"/alertsstat.html", AlertsStatHandler),
+            (r"/alertfilter.html", AlertFilterHandler),
 
             (r"/autofixscriptslist.html", ShowScriptsHandler),
             (r"/autofixbinding.html", BindScriptHandler),

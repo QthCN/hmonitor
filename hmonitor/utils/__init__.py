@@ -62,7 +62,7 @@ class DatetimeEncoder(json.JSONEncoder):
         # Let the base class default method raise the TypeError
         return json.JSONEncoder.default(self, obj)
 
-datetime_fmt = "%b-%d-%y %H:%M:%S"
+datetime_fmt = "%Y-%m-%d %H:%M:%S"
 
 def convert_datetime_to_str(d):
     return d.strftime(datetime_fmt);

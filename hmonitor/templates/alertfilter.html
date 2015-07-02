@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block page-title %}告警屏蔽{% end %}
+
+{% block dir-parent %}订阅管理{% end %}
+{% block dir-leaf %}告警屏蔽{% end %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>提示:</strong> 屏蔽后，所有订阅告警的人都将在屏蔽期间无法收到告警。屏蔽的告警不会出现在任何统计、展现或绩效评定的数据中。
+    </div>
+
+<div class="row-fluid">
+    <a href="#tablewidget1" class="block-heading" data-toggle="collapse">过滤告警（若告警已经被屏蔽则会更新屏蔽信息）</a>
+    <div id="tablewidget1" class="block-body collapse in">
+        <br/>
+        <div style="width:550px;">
+            <div>
+                  被屏蔽告警项: <input type="text" name="trigger_name" />
+            </div>
+            <div>
+                  要被过滤主机: <input type="text" name="hostname" />
+            </div>
+            <div>
+                  屏蔽原因说明: <input type="text" name="comment" />
+            </div>
+            <div>
+                  屏蔽起始时间: <input type="text" name="begin_time" /> (格式'2015-06-30 10:00:00')
+            </div>
+            <div>
+                  屏蔽结束时间: <input type="text" name="end_time" /> (格式'2015-06-30 17:00:00')
+            </div>
+            <div style="width:312px;">
+                <div  style="text-align:right;">
+                      <button type="button" class="btn btn-default btn-sm " onclick="do_alert_filter()">设置屏蔽</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row-fluid">
+    <a href="#tablewidget2" class="block-heading" data-toggle="collapse">目前过滤告警列表</a>
+    <div id="tablewidget2" class="block-body collapse in">
+        <table class="table table-hover">
+            <tr>
+                <th>告警项</th>
+                <th>主机</th>
+                <th>屏蔽开始时间</th>
+                <th>屏蔽结束时间</th>
+                <th>屏蔽人</th>
+                <th>说明</th>
+                <th>操作</th>
+            </tr>
+            {% for alert_filter in alert_filters %}
+                <tr>
+                    <td>
+                        {{ alert_filter["trigger_name"] }}
+                    </td>
+                    <td>
+                        {{ alert_filter["hostname"] }}
+                    </td>
+                    <td>
+                        {{ alert_filter["begin_time"] }}
+                    </td>
+                    <td>
+                        {{ alert_filter["end_time"] }}
+                    </td>
+                    <td>
+                        {{ alert_filter["filter"] }}
+                    </td>
+                    <td>
+                        {{ alert_filter["comment"] }}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default btn-sm " onclick="cancel_alert_filter('{{ alert_filter["trigger_name"] }}', '{{ alert_filter["hostname"] }}')">取消屏蔽</button>
+                    </td>
+                </tr>
+            {% end %}
+        </table>
+    </div>
+</div>
+
+    
+</div>
+
+{% end %}
+
+{% block js %}
+
+function cancel_alert_filter(trigger_name, hostname){
+    $.post("/alertfilter.html", {action: 'delete', trigger_name: trigger_name, hostname: hostname})
+          .done(function() {
+            alert( "取消成功" );
+            location.reload();
+          })
+          .fail(function() {
+            alert( "取消失败" );
+        });
+}
+
+function do_alert_filter(){
+    trigger_name = $("input[name='trigger_name']").val();
+    hostname = $("input[name='hostname']").val();
+    comment = $("input[name='comment']").val();
+    begin_time = $("input[name='begin_time']").val();
+    end_time = $("input[name='end_time']").val();
+
+    $.post("/alertfilter.html", {action: 'add', trigger_name: trigger_name, hostname: hostname,comment: comment, begin_time: begin_time, end_time:end_time})
+          .done(function() {
+            alert( "设置成功" );
+            location.reload();
+          })
+          .fail(function() {
+            alert( "设置失败。看下是不是'屏蔽原因说明'的问题，'屏蔽原因说明'目前只支持英文。" );
+          });
+}
+
+{% end %}

@@ -6,6 +6,7 @@ import tornado.web
 import tornado.httpclient
 
 from hmonitor.handlers import BaseHandler
+from hmonitor.utils import convert_str_to_datetime
 
 class MySubscribeAlertsHandler(BaseHandler):
 
@@ -106,3 +107,37 @@ class AlertsStatHandler(BaseHandler):
                     mail_alerts_in_7_days=mail_alerts_in_7_days,
                     sms_alerts_in_30_days=sms_alerts_in_30_days,
                     mail_alerts_in_30_days=mail_alerts_in_30_days)
+
+
+class AlertFilterHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self):
+        alert_filters = self.db.get_active_alert_filters()
+        self.render("alertfilter.html", alert_filters=alert_filters)
+
+    @tornado.web.authenticated
+    def post(self):
+        action = self.request.arguments.get("action")[0]
+        if action == "add":
+            trigger_name = self.request.arguments.get("trigger_name")[0]
+            hostname = self.request.arguments.get("hostname")[0]
+            begin_time = self.request.arguments.get("begin_time")[0]
+            end_time = self.request.arguments.get("end_time")[0]
+            comment = self.request.arguments.get("comment")[0]
+            user = self.get_user()
+            username = user["name"]
+
+            try:
+                begin_time = convert_str_to_datetime(begin_time)
+                end_time = convert_str_to_datetime(end_time)
+                self.db.create_alert_filter(trigger_name, hostname, username,
+                                            begin_time, end_time, comment)
+            except Exception as e:
+                logging.exception(e)
+                # TODO(tianhuan) Use another code here?
+                raise tornado.httpclient.HTTPError(400)
+        else:
+            trigger_name = self.request.arguments.get("trigger_name")[0]
+            hostname = self.request.arguments.get("hostname")[0]
+            self.db.cancel_alert_filter(trigger_name, hostname)

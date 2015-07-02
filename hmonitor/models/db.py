@@ -381,3 +381,53 @@ class HMonitorDB(object):
                 c=comments,
                 i=log_id
             ))
+
+    def create_alert_filter(self, trigger_name, hostname, filter, begin_time,
+                            end_time, comment):
+        comment.replace("\"", "'")
+        with DB(**self.db_dict) as db:
+            db._db.autocommit(False)
+            f = db.query("SELECT * FROM ALERT_FILTER WHERE "
+                         "TRIGGER_NAME='{t}' AND UPPER(HOSTNAME)=UPPER('{h}') "
+                         "AND END_TIME > NOW() FOR UPDATE".format(
+                t=trigger_name,
+                h=hostname
+            ))
+            if len(f) == 0:
+                db.execute("INSERT INTO ALERT_FILTER(TRIGGER_NAME, HOSTNAME, "
+                           "FILTER, BEGIN_TIME, END_TIME, COMMENT) VALUES "
+                           "('{t}', '{h}', '{f}', '{bd}', '{ed}', '{c}' "
+                           ")".format(t=trigger_name,
+                                      h=hostname,
+                                      f=filter,
+                                      bd=begin_time,
+                                      ed=end_time,
+                                      c=comment))
+            else:
+                db.execute("UPDATE ALERT_FILTER SET BEGIN_TIME='{bd}', "
+                           "END_TIME='{ed}', FILTER='{f}', COMMENT='{c}' "
+                           "WHERE TRIGGER_NAME='{t}' AND "
+                           "UPPER(HOSTNAME)=UPPER('{h}') "
+                           "".format(bd=begin_time,
+                                     ed=end_time,
+                                     f=filter,
+                                     c=comment,
+                                     t=trigger_name,
+                                     h=hostname))
+            db._db.commit()
+
+    def cancel_alert_filter(self, trigger_name, hostname):
+        with DB(**self.db_dict) as db:
+            db.execute("DELETE FROM ALERT_FILTER WHERE "
+                       "TRIGGER_NAME='{t}' AND "
+                       "UPPER(HOSTNAME)=UPPER('{h}')".format(
+                t=trigger_name,
+                h=hostname
+            ))
+
+    def get_active_alert_filters(self):
+        with DB(**self.db_dict) as db:
+            filters = db.query("SELECT * FROM ALERT_FILTER WHERE "
+                               "END_TIME > NOW()")
+            return filters
+
