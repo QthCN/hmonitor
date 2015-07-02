@@ -12,4 +12,4 @@ HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动
 系统架构
 --------
 
-![image](https://github.com/ButBueatiful/dotvim/raw/master/screenshots/vim-screenshot.jpg)
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/materials/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
