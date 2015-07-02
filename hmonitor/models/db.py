@@ -431,3 +431,11 @@ class HMonitorDB(object):
                                "END_TIME > NOW()")
             return filters
 
+    def check_alert_in_filter(self, trigger_name, hostname):
+        with DB(**self.db_dict) as db:
+            filters = db.query("SELECT * FROM ALERT_FILTER WHERE "
+                               "TRIGGER_NAME='{t}' AND HOSTNAME='{h}' "
+                               "AND BEGIN_TIME <= NOW() AND "
+                               "END_TIME >= NOW()".format(t=trigger_name,
+                                                          h=hostname))
+            return len(filters) > 0

@@ -94,8 +94,18 @@ class Agent(object):
         now = datetime.datetime.now()
         return (now - notice_obj["last_send_time"]).seconds > 300
 
+    def _alert_in_filter(self, event):
+        return self.db.check_alert_in_filter(event["trigger_name"],
+                                             event["hostname"])
+
     def _do_actions(self, events):
         for event in events:
+            if self._alert_in_filter(event):
+                logging.info("EVENT MATCH ALERT FILTER. IGNORE THIS EVENT. "
+                             "{t} on {h}".format(t=event["trigger_name"],
+                                                 h=event["hostname"]))
+                continue
+
             if self._auto_fix(event):
                 # TODO(tianhuan) send notification here?
                 self.db.expire_trigger_event(event["id"])
