@@ -70,7 +70,7 @@ HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动�
 
 ## 告警自动化处理
 
-所有的告警自动化处理的脚本都是Python格式的，在HMonitor启动的时候，会的去hmonitor/autofix/scripts中加载所有的.py文件。下面是一个样例文件。
+所有的告警自动化处理的脚本都是Python格式的，在HMonitor启动的时候，会的去hmonitor/autofix/scripts中加载所有的.py文件，文件名既是自动修复脚本名。下面是一个样例文件。
 
 ```python
 # -*- coding: utf-8 -*-
