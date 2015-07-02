@@ -68,3 +68,30 @@ HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动�
 
 ![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/show_autofix.jpg)
 
+## 告警自动化处理
+
+所有的告警自动化处理的脚本都是Python格式的，在HMonitor启动的时候，会的去hmonitor/autofix/scripts中加载所有的.py文件。下面是一个样例文件。
+
+```python
+# -*- coding: utf-8 -*-
+from hmonitor.autofix.scripts import AutoFixBase
+
+
+class JustShowEventInfo(AutoFixBase):
+
+    def do_fix(self, trigger_name, hostname, executor, event, *args, **kwargs):
+        raise Exception("ERROR TEST")
+
+    def get_author(self):
+        return "Qin TianHuan"
+
+    def get_version(self):
+        return "1"
+
+    def get_description(self):
+        return u"测试用脚本"
+
+    def get_create_date(self):
+        return "2015-06-30 09:00:00"
+```
+
