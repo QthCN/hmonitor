@@ -1,18 +1,15 @@
 HMonitor
-=========
+==========
 
 简介
------
+---
 
-HMonitor是一个用于管理、丰富Zabbix监控的管理程序。在HMonitor和Zabbix的架构中，Zabbix
-负责收集数据、定义trigger以及触发trigger对应的action给HMonitor。当HMonitor收到来自
-Zabbix的告警后，其会根据告警的主机、告警内容等信息从自己的内容库中丰富这个告警，然后再从
-自己的内容库中查看哪些用户订阅了这些告警，然后将告警通过邮件、短信等形式发送给订阅的用户。
+HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动化处理等功能的一个工具平台。目前提供的功能包括：
+1. 查看告警事件。使用者可以在“事件查看”标签下查看自己订阅的告警以及所有告警，并且了解有哪些告警需要自己处理
+2. 告警通知的订阅管理。在“订阅管理”标签下使用者可以订阅告警，对告警进行屏蔽，并查看一段时间内的告警情况
+3. 告警的自动修复。在“自动修复”标签下使用者可以查看目前提供的自动修复脚本，并且可以将告警事件和对应的修复脚本绑定，绑定后后续的告警会首先由修复脚本尝试修复，修复失败后才会告警。同时在该标签页下可以查看修复的成功率以及修复失败的原因。
 
-安装
-----
+系统架构
+--------
 
-1. 在Zabbix中设置对应监控项，监控项的名称格式为：HM-告警简短描述。如HM-CPU_LOAD
-2. 在Zabbix中设置对应的告警trigger，trigger的名称格式为：HM-trigger简短描述。如HM-CPU_HIGH_LOAD
-3. 在Zabbix中设置script类型的媒体类型，设置HMonitor的脚本
-4. 在Zabbix中设置对应的action
+![image](https://github.com/ButBueatiful/dotvim/raw/master/screenshots/vim-screenshot.jpg)
