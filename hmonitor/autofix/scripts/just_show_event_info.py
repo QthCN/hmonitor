@@ -4,7 +4,7 @@ from hmonitor.autofix.scripts import AutoFixBase
 
 class JustShowEventInfo(AutoFixBase):
 
-    def do_fix(self, trigger_name, hostname, executor, event):
+    def do_fix(self, trigger_name, hostname, executor, event, *args, **kwargs):
         raise Exception("ERROR TEST")
 
     def get_author(self):
