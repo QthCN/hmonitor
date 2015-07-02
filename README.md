@@ -28,4 +28,6 @@ HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动�
 
 ### 订阅管理
 
-点击*订阅告警*，即可查看所有可以被订阅的告警。如果对某个告警赶兴趣则可以在操作栏下点击*订阅告警*
+点击*订阅告警*，即可查看所有可以被订阅的告警。如果对某个告警赶兴趣则可以在操作栏下点击*订阅告警*，如果不想再次接收这个告警则可以点击*取消订阅*。
+
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/subscribe_alerts.jpg)
