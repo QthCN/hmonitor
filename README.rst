@@ -2,7 +2,7 @@ HMonitor
 ==========
 
 简介
----
+-----
 
 HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动化处理等功能的一个工具平台。目前提供的功能包括：
 1. 查看告警事件。使用者可以在“事件查看”标签下查看自己订阅的告警以及所有告警，并且了解有哪些告警需要自己处理
@@ -12,4 +12,4 @@ HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、自动
 系统架构
 --------
 
-![image](https://github.com/QthCN/hmonitor/blob/master/docs/materials/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
+![](https://github.com/QthCN/hmonitor/blob/master/docs/materials/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
