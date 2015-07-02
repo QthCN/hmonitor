@@ -76,7 +76,6 @@ HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动�
 # -*- coding: utf-8 -*-
 from hmonitor.autofix.scripts import AutoFixBase
 
-
 class JustShowEventInfo(AutoFixBase):
 
     def do_fix(self, trigger_name, hostname, executor, event, *args, **kwargs):
@@ -95,3 +94,19 @@ class JustShowEventInfo(AutoFixBase):
         return "2015-06-30 09:00:00"
 ```
 
+大部分method的含义根据其名称就能明白。真正会被调用执行自动修复的method为do_fix。其参数说明如下：
+
+* trigger_name：告警项名称
+* hostname：发生告警的主机名
+* executor：一个HMonitor允许的可以执行远程调用的对象。下面会说到
+* event：告警的其它信息，一般不会用到
+
+当修复脚本被调用的时候，do_fix就会的被调用，一般只需要trigger_name和hostname就能明白什么主机上出了什么问题，因此这是两个最常会被用到的参数。
+
+由于大部分操作都需要去故障主机执行一些命令，因此HMonitor提供了executor，目前的executor只是SSH。比如我想在远端主机执行一个过滤文件的操作，则代码可以如下：
+
+```python
+    ret, result = executor.execute("ls -l | grep 'helloworld'")
+```
+
+注意，executor执行的命令是发生在产生告警的主机上的。
