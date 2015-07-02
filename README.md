@@ -54,3 +54,17 @@ HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动�
 
 ![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/all_events.jpg )
 
+### 告警自动化处理（告警自动修复）
+
+在HMonitor中，可以预先上传一些自动修复的脚本（这个下面会专门讲到）。上传后可以在*修复脚本*中查看这些脚本。
+
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/autofix_list.jpg)
+
+告警项需要和修复脚本关联后，相应的告警才能被脚本自动处理。关联操作可以在*绑定关系*中进行。
+
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/bind_autofix.jpg)
+
+可以在*修复统计*中查看修复情况。
+
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/show_autofix.jpg)
+
