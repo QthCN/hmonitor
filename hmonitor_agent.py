@@ -122,6 +122,7 @@ class Agent(object):
                 else:
                     notice_obj = dict(last_send_time=datetime.datetime.now())
                     self.events_notification_history[h_key] = notice_obj
+                    # TODO(tianhuan) memory leak here?
 
                     for agent in self.notification_agents:
                         agent.notice(event)
