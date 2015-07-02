@@ -44,3 +44,13 @@ HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动�
 
 ![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/show_alerts.jpg)
 
+### 事件查看
+
+在订阅了告警后，就可以看到自己订阅的告警产生的事件了。这个在*我的事件*中可以查看。
+
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/my_events.jpg )
+
+如果想查看所有事件，可以在*所有事件*中查看。
+
+![image](https://github.com/QthCN/hmonitor/blob/master/docs/images/all_events.jpg )
+
