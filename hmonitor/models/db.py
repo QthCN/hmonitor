@@ -439,3 +439,23 @@ class HMonitorDB(object):
                                "END_TIME >= NOW()".format(t=trigger_name,
                                                           h=hostname))
             return len(filters) > 0
+
+    def get_hm_triggers(self, only_hm=True):
+        # TODO(tianhuan) filter result by 'only_hm'?
+        with DB(**self.db_dict) as db:
+            triggers = db.query("SELECT * FROM HM_TRIGGER")
+            return triggers
+
+    def clear_hm_triggers(self):
+        with DB(**self.db_dict) as db:
+            db.execute("DELETE FROM HM_TRIGGER")
+
+    def create_hm_triggers(self, trigger_name, priority, comments):
+        comments = comments.replace("\"", "'")
+        with DB(**self.db_dict) as db:
+            db.execute("INSERT INTO HM_TRIGGER(DESCRIPTION, PRIORITY, "
+                       "COMMENTS) VALUES('{t}', {p}, '{c}')".format(
+                t=trigger_name,
+                p=priority,
+                c=comments
+            ))

@@ -20,29 +20,31 @@
                         <th>主机</th>
                     </tr>
                     {% for trigger_name in triggers_subscribed %}
-                        <tr {% if triggers_info[trigger_name]["priority"] == "0" %}
-                                class="info"
-                            {% elif triggers_info[trigger_name]["priority"] == "1" %}
-                                class="info"
-                            {% elif triggers_info[trigger_name]["priority"] == "2" %}
-                                class="warning"
-                            {% elif triggers_info[trigger_name]["priority"] == "3" %}
-                                class="warning"
-                            {% elif triggers_info[trigger_name]["priority"] == "4" %}
-                                class="error"
-                            {% else %}
-                                class="error"
-                            {% end %} >
-                            <td align="left">
-                                {{ triggers_info[trigger_name]["name"] }}
-                            </td>
-                            <td align="left">
-                                {{ triggers_info[trigger_name]["comments"] }}
-                            </td>
-                            <td>
-                                全部
-                            </td>
-                        </tr>
+                        {% if trigger_name in triggers_info %}
+                            <tr {% if triggers_info[trigger_name]["priority"] == "0" %}
+                                    class="info"
+                                {% elif triggers_info[trigger_name]["priority"] == "1" %}
+                                    class="info"
+                                {% elif triggers_info[trigger_name]["priority"] == "2" %}
+                                    class="warning"
+                                {% elif triggers_info[trigger_name]["priority"] == "3" %}
+                                    class="warning"
+                                {% elif triggers_info[trigger_name]["priority"] == "4" %}
+                                    class="error"
+                                {% else %}
+                                    class="error"
+                                {% end %} >
+                                <td align="left">
+                                    {{ triggers_info[trigger_name]["name"] }}
+                                </td>
+                                <td align="left">
+                                    {{ triggers_info[trigger_name]["comments"] }}
+                                </td>
+                                <td>
+                                    全部
+                                </td>
+                            </tr>
+                        {% end %}
                     {% end %}
                 </table>
             </div>

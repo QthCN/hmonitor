@@ -61,7 +61,10 @@ class ZabbixProxy(object):
         response = self.do_request(request_body)
         return response.get("result", None)
 
-    def get_triggers(self, only_hm=True):
+    def get_triggers(self, only_hm=True, db=None):
+        if db:
+            return db.get_hm_triggers(only_hm)
+
         method = "trigger.get"
         if cache.get_cached_content(method):
             return cache.get_cached_content(method)
@@ -82,6 +85,9 @@ class ZabbixProxy(object):
                 else:
                     tmp[trigger["triggerid"]] = {k: trigger[k]}
 
+        # I can't get all trigger infos in one request(i don't know why, but
+        # Zabbix just give no response to me). So here let's divide request
+        # into some small parts
         _get_trigger_info("description")
         _get_trigger_info("comments")
         _get_trigger_info("priority")
@@ -103,15 +109,15 @@ class ZabbixProxy(object):
                 r.append(t)
         r.sort()
 
-        cache.set_cached_content(method, r, 1800)
+        cache.set_cached_content(method, r, 10800)
         return r
 
-    def get_triggers_name(self, only_hm=True):
+    def get_triggers_name(self, only_hm=True, db=None):
         method = "triggers_name"
         if cache.get_cached_content(method):
             return cache.get_cached_content(method)
 
-        triggers = self.get_triggers(only_hm)
+        triggers = self.get_triggers(only_hm, db)
         triggers_name = []
         for trigger in triggers:
             name = trigger.get("description", None)
@@ -121,12 +127,12 @@ class ZabbixProxy(object):
         cache.set_cached_content(method, triggers_name, 1800)
         return triggers_name
 
-    def get_triggers_info(self, only_hm=True):
+    def get_triggers_info(self, only_hm=True, db=None):
         method = "triggers_info"
         if cache.get_cached_content(method):
             return cache.get_cached_content(method)
 
-        triggers = self.get_triggers(only_hm)
+        triggers = self.get_triggers(only_hm, db)
         triggers_info = {}
         for trigger in triggers:
             name = trigger.get("description", None)

@@ -32,7 +32,7 @@ class BindScriptHandler(BaseHandler):
             return d
 
         scripts = get_autofix_scripts().keys()
-        triggers = self.zabbix.get_triggers_info().keys()
+        triggers = self.zabbix.get_triggers_info(db=self.db).keys()
         bindings = convert_list_to_dict(
             self.db.get_autofix_bindings()
         )
