@@ -1,11 +1,94 @@
-drop database if exists hmonitor;
-create database hmonitor;
-use hmonitor;
-create table USERS(id int not null AUTO_INCREMENT, name varchar(128) not null unique, mail varchar(128) not null unique, phone varchar(128) not null unique, password varchar(1024) not null, primary key (id), key(name));
-create table USERS_TRIGGER_BINDING(id int not null AUTO_INCREMENT, user_id int not null, trigger_name varchar(256) not null, primary key(id), key(user_id), key(trigger_name));
-create table TRIGGER_EVENTS(id int not null AUTO_INCREMENT, trigger_name varchar(256) not null, hostname varchar(256) not null, event varchar(256) not null, value varchar(256) not null, type varchar(128) not null default 'NORMAL', last_occur_time timestamp not null, first_occur_time timestamp not null, severity varchar(256) not null, occur_amount int not null, status varchar(128) not null, primary key (id), key(trigger_name), key(last_occur_time), key(first_occur_time), key(status), key(severity));
-create table ALERT_MSG(id int not null AUTO_INCREMENT, mail varchar(128), phone varchar(128), trigger_name varchar(256) not null, hostname varchar(256) not null, send_time timestamp not null, primary key (id), key(send_time), key(trigger_name));
-create table AUTOFIX_BINDING(id int not null AUTO_INCREMENT, trigger_name varchar(256) not null, auto_fix_script varchar(256) not null, change_user varchar(256) not null, change_date TIMESTAMP not null, primary key (id), key(trigger_name));
-create table AUTOFIX_LOG(id int not null AUTO_INCREMENT, trigger_name varchar(256) not null, hostname varchar(256) not null, script varchar(256) not null, begin_time TIMESTAMP not null, status varchar(256) not null, event_id int not null, comments varchar(4096) not null default "", primary key (id), key(trigger_name), key(hostname), key(begin_time), key(status));
-create table ALERT_FILTER(id int not null AUTO_INCREMENT, trigger_name varchar(256) not null, hostname varchar(256) not null, begin_time timestamp not null, end_time timestamp not null, filter varchar(256) not null, comment varchar(4096) not null, primary key (id), key(trigger_name), key(hostname));
-create table HM_TRIGGER(id int not null AUTO_INCREMENT, description varchar(256) not null, priority int not null, comments varchar(4096) not null default "", primary key (id), key(description));
+DROP DATABASE IF EXISTS hmonitor;
+CREATE DATABASE hmonitor;
+USE hmonitor;
+CREATE TABLE USERS (
+  id       INT           NOT NULL AUTO_INCREMENT,
+  name     VARCHAR(128)  NOT NULL UNIQUE,
+  mail     VARCHAR(128)  NOT NULL UNIQUE,
+  phone    VARCHAR(128)  NOT NULL UNIQUE,
+  password VARCHAR(1024) NOT NULL,
+  PRIMARY KEY (id),
+  KEY (name)
+);
+CREATE TABLE USERS_TRIGGER_BINDING (
+  id           INT          NOT NULL AUTO_INCREMENT,
+  user_id      INT          NOT NULL,
+  trigger_name VARCHAR(256) NOT NULL,
+  PRIMARY KEY (id),
+  KEY (user_id),
+  KEY (trigger_name)
+);
+CREATE TABLE TRIGGER_EVENTS (
+  id               INT          NOT NULL AUTO_INCREMENT,
+  trigger_name     VARCHAR(256) NOT NULL,
+  hostname         VARCHAR(256) NOT NULL,
+  event            VARCHAR(256) NOT NULL,
+  value            VARCHAR(256) NOT NULL,
+  type             VARCHAR(128) NOT NULL DEFAULT 'NORMAL',
+  last_occur_time  TIMESTAMP    NOT NULL,
+  first_occur_time TIMESTAMP    NOT NULL,
+  severity         VARCHAR(256) NOT NULL,
+  occur_amount     INT          NOT NULL,
+  status           VARCHAR(128) NOT NULL,
+  PRIMARY KEY (id),
+  KEY (trigger_name),
+  KEY (last_occur_time),
+  KEY (first_occur_time),
+  KEY (status),
+  KEY (severity)
+);
+CREATE TABLE ALERT_MSG (
+  id           INT          NOT NULL AUTO_INCREMENT,
+  mail         VARCHAR(128),
+  phone        VARCHAR(128),
+  trigger_name VARCHAR(256) NOT NULL,
+  hostname     VARCHAR(256) NOT NULL,
+  send_time    TIMESTAMP    NOT NULL,
+  PRIMARY KEY (id),
+  KEY (send_time),
+  KEY (trigger_name)
+);
+CREATE TABLE AUTOFIX_BINDING (
+  id              INT          NOT NULL AUTO_INCREMENT,
+  trigger_name    VARCHAR(256) NOT NULL,
+  auto_fix_script VARCHAR(256) NOT NULL,
+  change_user     VARCHAR(256) NOT NULL,
+  change_date     TIMESTAMP    NOT NULL,
+  PRIMARY KEY (id),
+  KEY (trigger_name)
+);
+CREATE TABLE AUTOFIX_LOG (
+  id           INT           NOT NULL AUTO_INCREMENT,
+  trigger_name VARCHAR(256)  NOT NULL,
+  hostname     VARCHAR(256)  NOT NULL,
+  script       VARCHAR(256)  NOT NULL,
+  begin_time   TIMESTAMP     NOT NULL,
+  status       VARCHAR(256)  NOT NULL,
+  event_id     INT           NOT NULL,
+  comments     VARCHAR(4096) NOT NULL DEFAULT "",
+  PRIMARY KEY (id),
+  KEY (trigger_name),
+  KEY (hostname),
+  KEY (begin_time),
+  KEY (status)
+);
+CREATE TABLE ALERT_FILTER (
+  id           INT           NOT NULL AUTO_INCREMENT,
+  trigger_name VARCHAR(256)  NOT NULL,
+  hostname     VARCHAR(256)  NOT NULL,
+  begin_time   TIMESTAMP     NOT NULL,
+  end_time     TIMESTAMP     NOT NULL,
+  filter       VARCHAR(256)  NOT NULL,
+  comment      VARCHAR(4096) NOT NULL,
+  PRIMARY KEY (id),
+  KEY (trigger_name),
+  KEY (hostname)
+);
+CREATE TABLE HM_TRIGGER (
+  id          INT           NOT NULL AUTO_INCREMENT,
+  description VARCHAR(256)  NOT NULL,
+  priority    INT           NOT NULL,
+  comments    VARCHAR(4096) NOT NULL DEFAULT "",
+  PRIMARY KEY (id),
+  KEY (description)
+);
