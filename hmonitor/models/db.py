@@ -155,6 +155,11 @@ class HMonitorDB(object):
                 trigger_name=trigger_name
             ))
 
+    def remove_binding_trigger_record(self, trigger_name):
+        with DB(**self.db_dict) as db:
+            db.execute("DELETE FROM USERS_TRIGGER_BINDING WHERE "
+                       "TRIGGER_NAME='{t}'".format(t=trigger_name))
+
     def record_trigger_event(self, trigger_name, hostname, event,
                              value, severity):
         with DB(**self.db_dict) as db:

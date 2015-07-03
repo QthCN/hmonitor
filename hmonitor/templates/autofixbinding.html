@@ -51,13 +51,13 @@
                                 {% end %}
                             </td>
                             <td align="left">
-                                <select style="margin:1px;height:20px;width:100px;font-size:13px;" id="select_{{ trigger }}">
+                                <select style="margin:1px;height:20px;width:100px;font-size:13px;" id="select_{{ trigger.replace(' ', '_') }}">
                                          <option value ="cancel">解绑</option>
                                     {% for script in scripts %}
                                          <option value ="{{  script }}">{{  script }}</option>
                                     {% end %}
                                 </select>
-                                <button type="button" name="update_autofix_trigger" class="btn btn-default btn-sm btn-warning" onclick="do_bind('{{ trigger }}', 'select_{{ trigger }}')">更新</button>
+                                <button type="button" name="update_autofix_trigger" class="btn btn-default btn-sm btn-warning" onclick="do_bind('{{ trigger }}', 'select_{{ trigger.replace(' ', '_') }}')">更新</button>
                             </td>
                         </tr>
                     {% end %}
