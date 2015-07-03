@@ -100,7 +100,7 @@ class ZabbixProxy(object):
             result = [t for t in triggers if
                         t["description"].upper().startswith(
                 constants.TRIGGER_PREFIX
-            )]
+            ) and " " not in t["description"]]
 
         # TODO(tianhuan) Remove duplicated triggers, necessary?
         r = []
