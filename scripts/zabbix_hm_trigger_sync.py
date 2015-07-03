@@ -3,6 +3,7 @@
 import logging
 import time
 
+import tornado
 from tornado.options import define, options
 
 from hmonitor.models.db import HMonitorDB
@@ -44,6 +45,9 @@ def force_sync(db, zabbix_triggers, hm_triggers):
 
     # clear alert subscribe list
         for t in removed_triggers:
+            logging.info("REMOVE ALERT SUBSCRIBE ON {tr}".format(
+                tr=t["description"]
+            ))
             db.remove_binding_trigger_record(t["description"])
 
 
@@ -76,4 +80,5 @@ def main():
 
 
 if __name__ == "__main__":
+    tornado.options.parse_command_line()
     main()
