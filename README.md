@@ -21,6 +21,7 @@ HMonitor是一个用于从Zabbix处接收告警后，进行告警管理、告警
 5. 执行HMonitor源码目录下的db.sql建立对应的表
 6. 执行hmonitor.py即可运行HMonitor/AutoFixer
 7. 执行hmonitor_agent.py即可运行HMonitor Agent
+8. 执行scripts/zabbix_hm_trigger_sync.py可以同步zabbix的trigger
 
 HMonitor/AutoFixer属于无状态服务，如果集群中告警或需要自动处理的主机较多，可以启动多个HMonitor/AutoFixer并将他们放在如nginx之类的LB后面。
 
