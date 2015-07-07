@@ -44,11 +44,11 @@ def force_sync(db, zabbix_triggers, hm_triggers):
                               trigger["comments"])
 
     # clear alert subscribe list
-        for t in removed_triggers:
-            logging.info("REMOVE ALERT SUBSCRIBE RECORD ON {tr}".format(
-                tr=t["description"]
-            ))
-            db.remove_binding_trigger_record(t["description"])
+    for t in removed_triggers:
+        logging.info("REMOVE ALERT SUBSCRIBE RECORD ON {tr}".format(
+            tr=t["description"]
+        ))
+        db.remove_binding_trigger_record(t["description"])
 
 
 def main():
